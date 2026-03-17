@@ -10,7 +10,7 @@
 
     .page{
         width: 1600px;
-        height: 1600px;
+        height: 1800px;
         margin: 100px;
         background-color: gray;
     }
@@ -33,7 +33,7 @@
         letter-spacing: 2px;
         box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         transition: transform 0.3s, box-shadow 0.3s;
-        }
+    }
 
 
     .content:hover{
