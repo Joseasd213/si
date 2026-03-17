@@ -1,9 +1,12 @@
-
+/*Body*/
     body{
         display: flex;
         justify-content: center;
         background-color: black;
+        background-image: url(images/stars.avif);
     }
+
+/*Containers*/
 
     .page{
         width: 1600px;
@@ -17,6 +20,7 @@
         margin: 20px;
         padding: 35px;
         border-radius: 15px;
+        max-width: 400px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -45,19 +49,28 @@
         gap: 20px;
     }
 
+/*Atributos generales*/
+
     img{
         width: 180px;
         padding-top: 20px;
     }
 
+    a{
+        text-decoration: none;
+    }
+
+/*Titulos*/
+
+
     .title1{
         display: flex;
         justify-content: center;
 
-        font-size: 34px;
+        font-size: 30px;
         font-weight: bold;
         font-family: 'Segoe UI', Arial, sans-serif;
-        color: #00aaff;
+        color: black;
         text-transform: uppercase;
         letter-spacing: 3px;
         position: relative;
@@ -69,14 +82,15 @@
         font-size: 34px;
         font-weight: bold;
         font-family: 'Segoe UI', Arial, sans-serif;
-        color: #ff7675;
+        color: black;
         text-transform: uppercase;
         letter-spacing: 3px;
         margin-bottom: 15px;
         position: relative;
     }
 
+    /*Palabras*/
 
-    a{
-        text-decoration: none;
-    }
+p{
+    font-size: 17px;
+}
