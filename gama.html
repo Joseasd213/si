@@ -2,73 +2,67 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Conducción Responsable</title>
-
+<title>Gama - Juego</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-body {
-  margin: 0;
-  background: #111;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
+  body {
+    margin: 0;
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: center;
+  }
 
-canvas {
-  background: #444;
-  display: block;
-  margin: 10px auto;
-  border: 3px solid white;
-}
+  canvas {
+    background: #444;
+    display: block;
+    margin: 10px auto;
+    border: 3px solid white;
+  }
 
-#hud {
-  display: flex;
-  justify-content: space-around;
-  max-width: 500px;
-  margin: auto;
-}
+  #hud {
+    display: flex;
+    justify-content: space-around;
+    max-width: 600px;
+    margin: 6px auto;
+  }
 
-.bar {
-  width: 150px;
-  height: 20px;
-  background: #333;
-  border: 1px solid white;
-}
+  .bar {
+    width: 200px;
+    height: 18px;
+    background: #333;
+    border: 1px solid white;
+  }
 
-.fill {
-  height: 100%;
-  width: 0%;
-}
+  .fill {
+    height: 100%;
+    width: 0%;
+  }
 
-#alcohol { background: orange; }
-#distract { background: cyan; }
+  #alcohol { background: orange; }
+  #distract { background: cyan; }
 
-#event {
-  margin-top: 10px;
-  min-height: 40px;
-}
+  #event {
+    margin-top: 8px;
+    min-height: 36px;
+  }
 
-#eventPrompt {
-  margin-top: 10px;
-  font-size: 12px;
-  color: #aaa;
-}
+  #eventPrompt {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #ccc;
+  }
 
-#toggleDebuffs {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
+  #controls {
+    font-size: 13px;
+    color: #bbb;
+    margin-bottom: 6px;
+  }
 </style>
 </head>
-
 <body>
 
-<h2>🚗 Conducción Responsable</h2>
+<h2>🚗 Conducción Responsable — Gama</h2>
 
 <div id="hud">
   <div>
@@ -81,255 +75,335 @@ canvas {
   </div>
 </div>
 
+<p id="controls">Controles: W A S D para mover — Flechas ↑ ↓ para subir/bajar la velocidad (también aumenta la velocidad del coche) — R para resistir eventos — Q para aceptar</p>
+<p>Velocidad (obstáculos / flujo / coche): <span id="speed">60</span> km/h</p>
+<p id="event"></p>
 <p id="eventPrompt"></p>
 
-<p>Velocidad: <span id="speed">60</span> km/h</p>
-<p id="event"></p>
-
-<canvas id="game" width="300" height="700"></canvas>
+<canvas id="game" width="360" height="700"></canvas>
 
 <script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+  // Canvas y contexto
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
 
-const laneCount = 3;
-const laneWidth = canvas.width / laneCount;
-const lanes = [];
+  // Velocidad ambiental (controlada por flechas arriba/abajo)
+  let minSpeed = 10;
+  let maxSpeed = 180;
+  let acceleration = 1; // cuánto aumenta/disminuye por frame manteniendo la flecha
+  let speed = 60; // velocidad usada para mover obstáculos y ahora también para escalar la velocidad del coche
 
-for (let i = 0; i < laneCount; i++) {
-  lanes.push((i * laneWidth) + laneWidth / 2);
-}
+  // Debuffs y estado
+  let intox = 0;
+  let distract = 0;
+  let reactionDelay = 0; // ms, aplicado al tiempo de respuesta del movimiento
+  let invert = false; // invierte X cuando intoxicación alta
+  let gameOver = false;
+  let gameStartTime = Date.now();
 
-let lane = 1;
+  // Coche: posición y velocidad en eje X e Y (movimiento libre)
+  const car = {
+    x: canvas.width / 2 - 15,
+    y: canvas.height - 120,
+    w: 30,
+    h: 50,
+    speedX: 0,
+    speedY: 0
+  };
 
-let minSpeed = 20;
-let maxSpeed = 180;
-let acceleration = 1;
-let speed = 60;
-let intox = 0;
-let distract = 0;
-let reactionDelay = 0;
-let invert = false;
-let gameOver = false;
-let gameStartTime = Date.now(); // track game start for difficulty scaling
+  // Parámetros de la velocidad del jugador
+  const playerBaseSpeed = 3.5;   // velocidad base del coche cuando speed == 60
+  const playerSpeedCap = 9;      // tope razonable para la velocidad del coche
 
-const car = { x: lanes[lane] - 15, y: 600, w:30, h:50 };
-let obstacles = [];
-// obstacle spawn control
-let maxObstacles = 5;
-let baseSpawnRate = 0.005; // base per-frame chance when not on cooldown
-let spawnRate = baseSpawnRate;
-let spawnInterval = 60; // frames between spawns when a spawn occurs
-let spawnCooldown = 0;
-let baseEventRate = 0.0005; // base event spawn rate
-let eventRate = baseEventRate;
-let currentEvent = null; // stores event waiting for R/A choice
-let eventTimeout = null; // timeout for auto-agree
-let eventStartTime = 0; // timestamp when event started
-let resistCount = 0; // counter for R presses (need 10 to resist)
-let speedOffset = 0; // user-controlled speed offset from F/G keys
+  // Obstáculos
+  let obstacles = [];
+  let maxObstacles = 6;
+  let baseSpawnRate = 0.006;
+  let spawnRate = baseSpawnRate;
+  let spawnInterval = 50;
+  let spawnCooldown = 0;
 
-const events = [
-  { text:"La cerveza fría te tienta 🍺", a:20, d:0 },
-  { text:"Tus amigos hacen un brindis", a:20, d:0 },
-  { text:"Te sientes invencible", a:100, d:0 },
-  { text:"Te llama tu ex 📞", a:0, d:50 },
-  { text:"Quieres cambiar la música 🎵", a:0, d:40 },
-  { text:"Crees haber visto a Messi ⚽", a:0, d:200 },
-  { text:"Notificación del móvil 📱", a:0, d:20 },
-  { text:"Te ofrecen un tabaco 🚬", a:20, d:40 }
-];
+  // Eventos R/Q
+  let baseEventRate = 0.0006;
+  let eventRate = baseEventRate;
+  let currentEvent = null;
+  let eventTimeout = null;
+  let eventStartTime = 0;
+  let resistCount = 0;
 
-function drawRoad() {
-  ctx.fillStyle="#555";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  const events = [
+    { text:"La cerveza fría te tienta 🍺", a:20, d:0 },
+    { text:"Tus amigos hacen un brindis", a:20, d:0 },
+    { text:"Te sientes invencible", a:60, d:0 },
+    { text:"Te llama tu ex 📞", a:0, d:50 },
+    { text:"Quieres cambiar la música 🎵", a:0, d:40 },
+    { text:"Crees haber visto a Messi ⚽", a:0, d:80 },
+    { text:"Notificación del móvil 📱", a:0, d:20 },
+    { text:"Te ofrecen un tabaco 🚬", a:20, d:40 }
+  ];
 
-  ctx.setLineDash([20,20]);
-  ctx.strokeStyle="white";
+  // --- Dibujo ---
+  function drawRoad() {
+    ctx.fillStyle = "#555";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  for (let i = 1; i < laneCount; i++) {
-    ctx.beginPath();
-    ctx.moveTo(i * laneWidth, 0);
-    ctx.lineTo(i * laneWidth, canvas.height);
-    ctx.stroke();
+    // líneas punteadas central (estética)
+    ctx.setLineDash([12, 12]);
+    ctx.strokeStyle = "#777";
+    ctx.lineWidth = 2;
+    for(let y = - (Date.now() / 10 % 40); y < canvas.height; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(canvas.width/2, y);
+      ctx.lineTo(canvas.width/2, y + 20);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
   }
 
-  ctx.setLineDash([]);
-}
-
-function drawCar() {
-  ctx.fillStyle="blue";
-  ctx.fillRect(car.x, car.y, car.w, car.h);
-}
-
-function spawnObstacle() {
-  const l = Math.floor(Math.random()*laneCount);
-  obstacles.push({ 
-    x: lanes[l] - 15, 
-    y: -60, 
-    w:30, 
-    h:50 
-  });
-}
-
-function updateObstacles() {
-  obstacles.forEach(o=>o.y+=speed/20);
-  obstacles = obstacles.filter(o=>o.y<720);
-}
-
-function drawObstacles() {
-  ctx.fillStyle="red";
-  obstacles.forEach(o=>ctx.fillRect(o.x,o.y,o.w,o.h));
-}
-
-function collision() {
-  obstacles.forEach(o=>{
-    if(car.x<o.x+o.w && car.x+car.w>o.x &&
-       car.y<o.y+o.h && car.y+car.h>o.y) {
-      gameOver=true;
-    }
-  });
-}
-
-function updateBars() {
-  document.getElementById("alcohol").style.width = intox+"%";
-  document.getElementById("distract").style.width = distract+"%";
-}
-
-function applyDebuffs() {
-  reactionDelay = intox>=40 ? 300 : 0;
-  invert = intox>=80;
-  if(intox>=100 || distract>=100) gameOver=true;
-
-  if(intox>=20 || distract>=20) {
-    speed = 60 + (Math.random()*40-20);
+  function drawCar() {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(car.x, car.y, car.w, car.h);
+    // ventana
+    ctx.fillStyle = "rgba(255,255,255,0.2)";
+    ctx.fillRect(car.x+6, car.y+8, car.w-12, 14);
   }
-}
 
-function randomEvent() {
-  const e = events[Math.floor(Math.random()*events.length)];
-  document.getElementById("event").textContent = e.text;
-  currentEvent = e; // store event for R/A choice
-  eventStartTime = Date.now();
-  resistCount = 0; // reset resist counter for new event
-  
-  // auto-agree after 5 seconds if no response
-  if(eventTimeout) clearTimeout(eventTimeout);
-  eventTimeout = setTimeout(()=>{
-    if(currentEvent === e) { // only auto-agree if still same event
-      intox = Math.min(100, intox + currentEvent.a);
-      distract = Math.min(100, distract + currentEvent.d);
-      applyDebuffs();
-      updateBars();
-      currentEvent = null;
-      document.getElementById("eventPrompt").textContent = "";
+  function spawnObstacle() {
+    const ow = 30;
+    const oh = 50;
+    const randomX = Math.random() * (canvas.width - ow);
+    obstacles.push({
+      x: randomX,
+      y: -oh - Math.random()*200,
+      w: ow,
+      h: oh
+    });
+  }
+
+  function updateObstacles() {
+    // Usamos 'speed' como velocidad base para obstáculos; añadimos jitter si hay debuffs
+    const jitter = (intox >= 20 || distract >= 20) ? (Math.random() * 8 - 4) : 0;
+    obstacles.forEach(o => o.y += (speed / 20 + 1) + jitter);
+    obstacles = obstacles.filter(o => o.y < canvas.height + 100);
+  }
+
+  function drawObstacles() {
+    ctx.fillStyle = "red";
+    obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+  }
+
+  function collision() {
+    for (let o of obstacles) {
+      if (car.x < o.x + o.w && car.x + car.w > o.x &&
+          car.y < o.y + o.h && car.y + car.h > o.y) {
+        gameOver = true;
+        break;
+      }
     }
-  }, 5000);
-  
-  // update display immediately
-  updateEventPromptDisplay();
-}
+  }
 
-function updateEventPromptDisplay() {
-  if(!currentEvent) return;
-  const elapsed = (Date.now() - eventStartTime) / 1000;
-  const remaining = Math.max(0, 5 - elapsed);
-  document.getElementById("eventPrompt").textContent = `Press R to resist (${resistCount}/10), A to agree (${remaining.toFixed(1)}s)`;
-}
+  function updateBars() {
+    document.getElementById("alcohol").style.width = intox + "%";
+    document.getElementById("distract").style.width = distract + "%";
+  }
 
-document.addEventListener("keydown", e=>{
-  // handle event choice
-  if(currentEvent) {
-    if(e.key.toLowerCase()==='r') {
-      // resist: increment counter, need 10 presses to resist
-      resistCount++;
-      if(resistCount >= 10) {
-        // successfully resisted after 10 presses
+  // applyDebuffs NO cambia la variable 'speed' para que esta se mantenga cuando aceptes/resistas.
+  function applyDebuffs() {
+    reactionDelay = intox >= 40 ? 300 : 0; // ms
+    invert = intox >= 80;
+    if(intox >= 100 || distract >= 100) gameOver = true;
+    // NO reasignamos 'speed' aquí para que la velocidad se mantenga por el jugador
+  }
+
+  // Evento aleatorio y lógica R/Q (Q=aceptar, R=resistir)
+  function randomEvent() {
+    const e = events[Math.floor(Math.random() * events.length)];
+    document.getElementById("event").textContent = e.text;
+    currentEvent = e;
+    eventStartTime = Date.now();
+    resistCount = 0;
+
+    if(eventTimeout) clearTimeout(eventTimeout);
+    // Auto-aceptar tras 5s si no responden
+    eventTimeout = setTimeout(() => {
+      if(currentEvent === e) {
+        intox = Math.min(100, intox + currentEvent.a);
+        distract = Math.min(100, distract + currentEvent.d);
+        applyDebuffs();
+        updateBars();
+        currentEvent = null;
+        document.getElementById("eventPrompt").textContent = "";
+        // speed se mantiene exactamente igual: no reset
+      }
+    }, 5000);
+
+    updateEventPromptDisplay();
+  }
+
+  function updateEventPromptDisplay() {
+    if(!currentEvent) return;
+    const elapsed = (Date.now() - eventStartTime) / 1000;
+    const remaining = Math.max(0, 5 - elapsed);
+    document.getElementById("eventPrompt").textContent = `Pulsa R para resistir (${resistCount}/10), Q para aceptar (${remaining.toFixed(1)}s)`;
+  }
+
+  // --- Input: WASD para mover, flechas arriba/abajo para velocidad ---
+  const keysDown = {}; // soporte de teclas múltiples
+  let lastInputChangeTime = 0; // para aplicar reactionDelay al movimiento
+
+  document.addEventListener('keydown', (e) => {
+    const key = e.key;
+    // Si hay un evento activo, R/Q tienen prioridad (sin delay)
+    if(currentEvent) {
+      if(key.toLowerCase() === 'r') {
+        resistCount++;
+        if(resistCount >= 10) {
+          if(eventTimeout) clearTimeout(eventTimeout);
+          currentEvent = null;
+          resistCount = 0;
+          document.getElementById("eventPrompt").textContent = "";
+          // Al resistir, NO tocamos 'speed'
+        } else {
+          updateEventPromptDisplay();
+        }
+        return;
+      }
+      if(key.toLowerCase() === 'q') {
         if(eventTimeout) clearTimeout(eventTimeout);
+        intox = Math.min(100, intox + currentEvent.a);
+        distract = Math.min(100, distract + currentEvent.d);
+        applyDebuffs();
+        updateBars();
         currentEvent = null;
         resistCount = 0;
         document.getElementById("eventPrompt").textContent = "";
+        // Al aceptar, NO tocamos 'speed'
         return;
       }
-      // show updated count and continue
-      updateEventPromptDisplay();
+    }
+
+    // Registrar tecla
+    keysDown[key] = true;
+    lastInputChangeTime = Date.now();
+  });
+
+  document.addEventListener('keyup', (e) => {
+    delete keysDown[e.key];
+    lastInputChangeTime = Date.now();
+  });
+
+  // --- Loop principal ---
+  function loop() {
+    if(gameOver) {
+      ctx.fillStyle = "rgba(0,0,0,0.7)";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = "white";
+      ctx.font = "24px Arial";
+      ctx.fillText("💥 ACCIDENTE 💥", canvas.width/2 - 88, canvas.height/2 - 10);
+      ctx.font = "14px Arial";
+      ctx.fillText("F5 para reiniciar", canvas.width/2 - 48, canvas.height/2 + 20);
       return;
     }
-    if(e.key.toLowerCase()==='a') {
-      // agree: apply debuffs (only 1 press needed)
-      if(eventTimeout) clearTimeout(eventTimeout);
-      intox = Math.min(100, intox + currentEvent.a);
-      distract = Math.min(100, distract + currentEvent.d);
-      applyDebuffs();
-      updateBars();
-      currentEvent = null;
-      resistCount = 0;
-      document.getElementById("eventPrompt").textContent = "";
-      return;
-    }
-  }
 
-
-  // handle movement with reaction delay
-  setTimeout(()=>{
-    if(e.key==="ArrowLeft") lane += invert?1:-1;
-    if(e.key==="ArrowRight") lane += invert?-1:1;
-    // Control de velocidad con flechas
-    if(e.key === "ArrowUp") {
+    // Ajuste de velocidad con flechas (no afectado por reactionDelay)
+    if(keysDown["ArrowUp"]) {
       speed = Math.min(maxSpeed, speed + acceleration);
     }
-
-    if(e.key === "ArrowDown") {
+    if(keysDown["ArrowDown"]) {
       speed = Math.max(minSpeed, speed - acceleration);
-    }  
-    lane = Math.max(0,Math.min(2,lane));
-    car.x = lanes[lane]-15;
-  }, reactionDelay);
-});
+    }
 
-function loop() {
-  if(gameOver) {
-    ctx.fillStyle="black";
-    ctx.globalAlpha=0.7;
-    ctx.fillRect(0,0,300,1000);
-    ctx.globalAlpha=1;
-    ctx.fillStyle="white";
-    ctx.font="22px Arial";
-    ctx.fillText("💥 ACCIDENTE 💥",60,350);
-    return;
+    // Aplicar reactionDelay al cambio de movimiento: solo si ha pasado el delay desde la última entrada
+    const now = Date.now();
+    if(now - lastInputChangeTime >= reactionDelay) {
+      // Mapear WASD -> movimiento. Invert aplica solo al eje horizontal (A/D).
+      // Soportamos tanto mayúsculas como minúsculas
+      const w = keysDown["w"] || keysDown["W"];
+      const a = keysDown["a"] || keysDown["A"];
+      const s = keysDown["s"] || keysDown["S"];
+      const d = keysDown["d"] || keysDown["D"];
+
+      // calcular velocidad del jugador en base a la variable 'speed'
+      const multiplier = speed / 60; // 60 es referencia base
+      const scaled = playerBaseSpeed * multiplier;
+      const playerSpeed = Math.min(playerSpeedCap, Math.max(1, scaled)); // tope y mínimo razonable
+
+      // Horizontal
+      if(a && !d) {
+        car.speedX = invert ? playerSpeed : -playerSpeed;
+      } else if(d && !a) {
+        car.speedX = invert ? -playerSpeed : playerSpeed;
+      } else {
+        car.speedX = 0;
+      }
+
+      // Vertical (no invert)
+      if(w && !s) {
+        car.speedY = -playerSpeed;
+      } else if(s && !w) {
+        car.speedY = playerSpeed;
+      } else {
+        car.speedY = 0;
+      }
+    }
+
+    // Actualizaciones de posición
+    car.x += car.speedX;
+    car.y += car.speedY;
+
+    // Límites del coche dentro del canvas
+    if(car.x < 0) car.x = 0;
+    if(car.x + car.w > canvas.width) car.x = canvas.width - car.w;
+    if(car.y < 0) car.y = 0;
+    if(car.y + car.h > canvas.height) car.y = canvas.height - car.h;
+
+    // Dibujar
+    drawRoad();
+    drawCar();
+    drawObstacles();
+
+    // Obstáculos y colisiones
+    updateObstacles();
+    collision();
+
+    // Spawn de obstáculos
+    if(spawnCooldown > 0) spawnCooldown--;
+    if(spawnCooldown <= 0 && Math.random() < spawnRate && obstacles.length < maxObstacles) {
+      spawnObstacle();
+      spawnCooldown = spawnInterval;
+    }
+
+    // Eventos aleatorios
+    if(Math.random() < eventRate) randomEvent();
+
+    if(currentEvent) updateEventPromptDisplay();
+
+    // Escala de dificultad con el tiempo
+    const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
+    const difficultyMultiplier = 1 + (elapsedSeconds / 60);
+    spawnRate = Math.min(0.05, baseSpawnRate * difficultyMultiplier);
+    eventRate = Math.min(0.003, baseEventRate * difficultyMultiplier);
+
+    // Debuffs (re-calculan reactionDelay / invert / gameOver), NO tocan 'speed'
+    applyDebuffs();
+    updateBars();
+
+    // Mostrar velocidad en el HUD
+    document.getElementById('speed').textContent = Math.round(speed);
+
+    requestAnimationFrame(loop);
   }
 
-  drawRoad();
-  drawCar();
-  drawObstacles();
-  updateObstacles();
-  collision();
+  // Iniciar loop
+  loop();
 
-  // obstacle spawn: respect cooldown and max limit, spawn a bit slower
-  if(spawnCooldown>0) spawnCooldown--;
-  if(spawnCooldown<=0 && Math.random()<spawnRate && obstacles.length<maxObstacles) {
-    spawnObstacle();
-    spawnCooldown = spawnInterval;
-  }
-
-  if(Math.random()<eventRate) randomEvent();
-
-  // update event countdown display
-  if(currentEvent) updateEventPromptDisplay();
-
-  // increase difficulty over time
-  const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
-  const difficultyMultiplier = 1 + (elapsedSeconds / 60); // increase by 1% every 6 seconds
-  spawnRate = Math.min(0.05, baseSpawnRate * difficultyMultiplier); // cap at 0.05
-  eventRate = Math.min(0.003, baseEventRate * difficultyMultiplier); // cap at 0.003
-
-  document.getElementById("speed").textContent = Math.round(speed);
-
-  requestAnimationFrame(loop);
-}
-
-loop();
 </script>
+
+<!-- barras de estado ocultas visualmente en DOM (pero actualizadas por JS) -->
+<div style="display:none">
+  <div id="alcohol" class="fill"></div>
+  <div id="distract" class="fill"></div>
+</div>
 
 </body>
 </html>

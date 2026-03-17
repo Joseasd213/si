@@ -1,0 +1,82 @@
+
+    body{
+        display: flex;
+        justify-content: center;
+        background-color: black;
+    }
+
+    .page{
+        width: 1600px;
+        height: 1600px;
+        margin: 100px;
+        background-color: gray;
+    }
+
+    .content{
+        background-color: white;
+        margin: 20px;
+        padding: 35px;
+        border-radius: 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        font-weight: bold;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+
+    .content:hover{
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+
+    .gallery{
+        display: flex;
+        justify-content: center;
+        max-height: 1000px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    img{
+        width: 180px;
+        padding-top: 20px;
+    }
+
+    .title1{
+        display: flex;
+        justify-content: center;
+
+        font-size: 34px;
+        font-weight: bold;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #00aaff;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        position: relative;
+    }
+
+    .title2{
+        display: flex;
+        justify-content: center;
+        font-size: 34px;
+        font-weight: bold;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        color: #ff7675;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+
+    a{
+        text-decoration: none;
+    }

@@ -31,19 +31,19 @@ a{
 /*Container*/
 
 .container-1{
-    border-radius: 20px;
-    border: solid 10px rgb(77, 77, 77);
-    margin: 24px 0 0 64px;
-    background: linear-gradient(to top , #5e5e5ef4, #00000071);    
-    text-align: center;
-    width: 250px;
-    height: 480px;
-    align-items: center;
-    padding: 6px;
+  border-radius: 20px;
+  border: solid 10px rgb(77, 77, 77);
+  margin: 64px 0 0 64px;
+  background: linear-gradient(to top , #5e5e5ef4, #00000071);    
+  text-align: center;
+  width: 250px;
+  height: 480px;
+  align-items: center;
+  padding: 6px;
 }
 
 .container-2{
-  left: 120px;
+  left: 110px;
   position: relative;
   width: 100px;
 }
@@ -58,13 +58,13 @@ a{
 /*Buttons*/
 
 .button{
-    margin: 30px 30px 30px 30px;
-    border-radius: 5px;
-    padding: 0.1px;
-    align-items: center;
-    text-align: center;
-    background: linear-gradient(to top, #636363, #ffffff5b);    
-    border: solid 3px rgb(59, 59, 60);
+  margin: 30px 30px 30px 30px;
+  border-radius: 5px;
+  padding: 0.1px;
+  align-items: center;
+  text-align: center;
+  background: linear-gradient(to top, #636363, #ffffff5b);    
+  border: solid 3px rgb(59, 59, 60);
 }
 
 
@@ -99,7 +99,7 @@ a{
 
 
 .productos {
-  margin: 150px 0 0 0;
+  margin: 120px 0 0 0;
   position: relative;
   left: 100px;
 }
@@ -140,7 +140,7 @@ a{
 }
 
 .card img {
-  width: 250px;
+  width: 200px;
   height: 100%;
   object-fit: contain;
 }
@@ -152,7 +152,7 @@ a{
   color: white;
   border: solid black;
   background: linear-gradient(to top, #636363, #6666665b);    
-  padding: 11px 30px;
+  padding: 10px 20px;
   border-radius: 20px;
   font-size: 20px;
 }
@@ -162,7 +162,7 @@ a{
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: #e5e5e5;
+  background: #b9b9b9;
   border: none;
   width: 40px;
   height: 40px;
@@ -177,7 +177,7 @@ a{
 }
 
 .arrow.right {
-  right: -45px;  /* ajusta según tu diseño */
+  right: -15px;  /* ajusta según tu diseño */
 }
 
 /* Barra de progreso (opcional) */
