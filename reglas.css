@@ -10,9 +10,10 @@
 
     .page{
         width: 1600px;
-        height: 2500px;
+        height: 3500px;
         margin: 100px;
-        background-color: gray;
+        background-color: rgba(152, 217, 249, 0.5);    
+        border-radius: 20px;
     }
 
     .content{
@@ -55,12 +56,12 @@
         padding: 50px 0 0 0 ;
     }
     .button-exit{
-        margin-right: 450px;
+        margin-right: 350px;
     }
     .button-go{
-        margin-left: 450px;
+        margin-left: 350px;
         display: flex;
-        gap: 20px;
+        gap: 50px;
     }
 
     .next{
@@ -73,6 +74,7 @@
         font-size: 30px;
         font-style: none;
         color: black;
+        background-color: green;
     }
     .previous{
         width: 200px;
@@ -84,6 +86,7 @@
         font-size: 30px;
         font-style: none;
         color: black;
+        background-color: green;
     }
 
     .leave{
@@ -96,6 +99,7 @@
         font-size: 30px;
         font-style: none;
         color: black;
+        background-color: red;
     }
 
 /*Atributos generales*/
@@ -110,7 +114,6 @@
     }
 
 /*Titulos*/
-
 
     .title1{
         display: flex;
