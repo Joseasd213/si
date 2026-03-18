@@ -10,7 +10,7 @@
 
     .page{
         width: 1600px;
-        height: 1800px;
+        height: 2500px;
         margin: 100px;
         background-color: gray;
     }
@@ -47,6 +47,55 @@
         max-height: 1000px;
         flex-wrap: wrap;
         gap: 20px;
+    }
+
+    .buttons{
+        display: flex;
+        justify-content: space-evenly;
+        padding: 50px 0 0 0 ;
+    }
+    .button-exit{
+        margin-right: 450px;
+    }
+    .button-go{
+        margin-left: 450px;
+        display: flex;
+        gap: 20px;
+    }
+
+    .next{
+        width: 200px;
+        padding: 25px 0 25px 0;
+        border-radius: 10px;
+        border: solid 1px black;   
+        align-items: center;
+        text-align: center; 
+        font-size: 30px;
+        font-style: none;
+        color: black;
+    }
+    .previous{
+        width: 200px;
+        padding: 25px 0 25px 0;
+        border-radius: 10px;
+        border: solid 1px black;
+        align-items: center;
+        text-align: center;
+        font-size: 30px;
+        font-style: none;
+        color: black;
+    }
+
+    .leave{
+        width: 200px;
+        padding: 25px 0 25px 0;
+        border-radius: 10px;
+        border: solid 1px black;
+        align-items: center;
+        text-align: center;
+        font-size: 30px;
+        font-style: none;
+        color: black;
     }
 
 /*Atributos generales*/
@@ -93,4 +142,5 @@
 
 p{
     font-size: 17px;
+    
 }
