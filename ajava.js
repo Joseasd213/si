@@ -34,9 +34,11 @@
     });
 
     acceptButton.addEventListener('click', () => {
+        alert('Has acceptat les opcions.');
         hideVehicleOptions();
     });
 
     denyButton.addEventListener('click', () => {
+        alert('Has denegat les opcions.');
         hideVehicleOptions();
     });
