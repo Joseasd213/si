@@ -211,3 +211,21 @@ p{
     width: 300px;
     height: 100px;
 }
+
+/*Manual*/
+
+.manual {
+    position: absolute;
+    top: 650px;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    text-align: center;
+    border: solid 2px black;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 133, 0.9);
+
+    z-index: 10; /* 👈 por encima de explanation */
+}
