@@ -9,3 +9,36 @@
     prev.addEventListener('click', () => {
     track.scrollBy({ left: -420, behavior: 'smooth' });
     });
+
+    // Opcions dinamicas per a vehicles
+    const vehicleButtons = document.querySelectorAll('.vehicle-btn');
+    const optionsSection = document.getElementById('vehicle-options');
+    const vehicleTitle = document.getElementById('vehicle-title');
+    const acceptButton = document.getElementById('accept-button');
+    const denyButton = document.getElementById('deny-button');
+
+    function showVehicleOptions(vehicle) {
+        vehicleTitle.textContent = `Opcions per a ${vehicle}`;
+        optionsSection.style.display = 'block';
+    }
+
+    function hideVehicleOptions() {
+        optionsSection.style.display = 'none';
+    }
+
+    vehicleButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const vehicle = btn.dataset.vehicle || btn.textContent.trim();
+            showVehicleOptions(vehicle);
+        });
+    });
+
+    acceptButton.addEventListener('click', () => {
+        alert('Has acceptat les opcions.');
+        hideVehicleOptions();
+    });
+
+    denyButton.addEventListener('click', () => {
+        alert('Has denegat les opcions.');
+        hideVehicleOptions();
+    });
