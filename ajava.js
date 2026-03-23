@@ -16,10 +16,15 @@
     const vehicleTitle = document.getElementById('vehicle-title');
     const acceptButton = document.getElementById('accept-button');
     const denyButton = document.getElementById('deny-button');
+    const optionCards = document.querySelectorAll('.option-card');
+
+    let selectedOption = null;
 
     function showVehicleOptions(vehicle) {
         vehicleTitle.textContent = `Opcions per a ${vehicle}`;
         optionsSection.style.display = 'block';
+        selectedOption = null; // Reset selection
+        optionCards.forEach(card => card.classList.remove('selected'));
     }
 
     function hideVehicleOptions() {
@@ -33,8 +38,20 @@
         });
     });
 
+    optionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            optionCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedOption = card.dataset.type;
+        });
+    });
+
     acceptButton.addEventListener('click', () => {
-        hideVehicleOptions();
+        if (selectedOption) {
+            window.location.href = selectedOption + '.html';
+        } else {
+            alert('Por favor, selecciona una opción.');
+        }
     });
 
     denyButton.addEventListener('click', () => {
