@@ -13,6 +13,7 @@ const advice = document.querySelector("#advice");
 const reglas = document.querySelector("#rules");
 const salir = document.querySelector("#salir");
 
+
 let paginaActual = 1; // 1 = purpose, 2 = how, 3 = who
 
 function mostrarPagina() {
@@ -126,3 +127,12 @@ function actualizarVista(){
 botonJugar.addEventListener("click", () => {
     window.location.href = "menu.html";
 });
+
+
+    next.addEventListener('click', () => {
+    track.scrollBy({ left: 420, behavior: 'smooth' });
+    });
+
+    prev.addEventListener('click', () => {
+    track.scrollBy({ left: -420, behavior: 'smooth' });
+    });
