@@ -119,3 +119,10 @@ function actualizarVista(){
 
 
 }
+
+// Selecciona el botón "Jugar"
+
+// Al hacer click, redirige a menu.html
+botonJugar.addEventListener("click", () => {
+    window.location.href = "menu.html";
+});
