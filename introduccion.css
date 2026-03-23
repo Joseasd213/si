@@ -54,18 +54,33 @@ body{
 
 /*Buttons*/
 
-.content{
+.content {
     display: flex;
     justify-content: center;
     position: relative;
     z-index: 2;
-    margin-top: 560px;
+    margin-top: 660px;
     gap: 60px;
     align-items: center;
     text-align: center;
-    z-index: 2; /* 🔥 por encima */
 }
 
+#como {
+    transition: transform 0.3s ease; /* animación suave */
+}
+
+/* 👇 solo cuando pasas el ratón */
+#como:hover {
+    transform: scale(1.1);   
+}
+
+#jugar{
+    transition: transform 0.3s ease; /* animación suave */
+}
+
+#jugar:hover {
+    transform: scale(1.1);
+}
 
 button{
     padding: 20px 40px;
