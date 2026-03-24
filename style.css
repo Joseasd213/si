@@ -1,15 +1,13 @@
 /*Body*/
 
 body{
-    margin: 0px;
-    padding-top: 50px;
-    background-color: grey;
+    background-color: black;
     font-style: none;
-    background-image: url(images/stars.avif);
     background-size: cover;      /* se adapta y cubre todo */
     background-repeat: no-repeat;/* no se repite */
     display: flex;
     justify-content: center;
+    margin: 0px;
 }
 
 a{
@@ -20,8 +18,8 @@ a{
 /*Background*/
 
 .background{
-    width: 1400px;
-    height: 800px;
+    width: 94vw;   /* 100% del ancho de la ventana */
+    height: 100vh;  /* 100% de la altura de la ventana */
     background-image: url(images/gif.gif);
     background-size: cover;      /* se adapta y cubre todo */
     background-repeat: no-repeat;/* no se repite */
@@ -33,11 +31,11 @@ a{
 .container-1{
   border-radius: 20px;
   border: solid 10px rgb(77, 77, 77);
-  margin: 64px 0 0 64px;
+  margin: 128px 0 0 100px;
   background: linear-gradient(to top , #5e5e5ef4, #00000071);    
   text-align: center;
-  width: 250px;
-  height: 480px;
+  width: 350px;
+  height: 580px;
   align-items: center;
   padding: 6px;
 }
@@ -50,7 +48,10 @@ a{
 
 .container-3{
   margin: 0px;
-  width: 800px;
+  position: relative;
+  top: 70px;
+  margin-left: 100px;
+  width: 1000px;
   display: flex;
   border-bottom: solid;
 }
@@ -58,9 +59,9 @@ a{
 /*Buttons*/
 
 .button{
-  margin: 30px 0 0 0;
+  margin: 40px 0 0 0;
   border-radius: 5px;
-  padding: 0.1px;
+  padding: 2.2px;
   align-items: center;
   text-align: center;
   background: linear-gradient(to top, #636363, #ffffff5b);    
@@ -99,9 +100,9 @@ a{
 
 
 .productos {
-  margin: 220px 0 0 0;
+  margin: 250px 0 0 0;
   position: relative;
-  left: 100px;
+  left: 300px;
 }
 
 .productos h2 {
@@ -112,15 +113,16 @@ a{
 /* Slider */
 .slider {
   position: relative;
-  width: 850px;       /* ancho visible del slider */
-  left: -100px;
+  width: 950px;       /* ancho visible del slider */
+  left: -200px;
   overflow: visible;   /* esconde lo que está fuera */
 }
 
 /* Track que se desplaza */
 .slider-track {
   display: flex;
-  gap: 10px;
+  gap: 40px;
+  height: 500px;
   overflow-x: scroll;
   scroll-behavior: smooth;
   padding: 5px 0;
@@ -133,21 +135,21 @@ a{
 /* Tarjetas */
 .card {
   flex: 0 0 300px;  /* ancho fijo de tarjeta */
-  height: 250px;
+  height: 350px;
   border-radius: 8px;
   position: relative;
   overflow: hidden;
 }
 
 .card img {
-  width: 200px;
+  width: 300px;
   height: 100%;
   object-fit: contain;
 }
 
 .badge {
-  position: absolute;
-  bottom: 5px;
+  position: relative;
+  bottom: 60px;
   left: 25px;
   color: white;
   border: solid black;
@@ -164,8 +166,8 @@ a{
   transform: translateY(-50%);
   background: #b9b9b9;
   border: none;
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
   cursor: pointer;
   font-size: 18px;
@@ -173,11 +175,13 @@ a{
 }
 
 .arrow.left {
-  left: -30px;   /* ajusta según tu diseño */
+  left: -35px;   /* ajusta según tu diseño */
+  top: 190px;
 }
 
 .arrow.right {
-  right: -15px;  /* ajusta según tu diseño */
+  right: -55px;  /* ajusta según tu diseño */
+  top: 190px;
 }
 
 /* Barra de progreso (opcional) */
@@ -188,3 +192,5 @@ a{
   border-radius: 10px;
   margin: 20px auto 0;
 }
+
+

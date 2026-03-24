@@ -382,8 +382,8 @@
     // Escala de dificultad con el tiempo
     const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
     const difficultyMultiplier = 1 + (elapsedSeconds / 60);
-    spawnRate = Math.min(0.05, baseSpawnRate * difficultyMultiplier);
-    eventRate = Math.min(0.003, baseEventRate * difficultyMultiplier);
+    spawnRate = Math.min(0.003, baseSpawnRate * difficultyMultiplier);
+    eventRate = Math.min(0.001, baseEventRate * difficultyMultiplier);
 
     // Debuffs (re-calculan reactionDelay / invert / gameOver), NO tocan 'speed'
     applyDebuffs();
