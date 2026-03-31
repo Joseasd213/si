@@ -58,7 +58,7 @@ body{
     justify-content: center;
     position: relative;
     z-index: 2;
-    margin-top: 1060px;
+    margin-top: 860px;
     gap: 60px;
     align-items: center;
     text-align: center;
@@ -104,7 +104,7 @@ p{
         position: absolute;
         justify-content: center;
         z-index: 2;
-        bottom: 20px; /* 👈 los baja dentro del contenedor */
+        bottom: -40px; /* 👈 los baja dentro del contenedor */
         left: 0;
         gap: 830px;
     }
@@ -175,11 +175,12 @@ p{
 
 /*Flecha*/
 .flecha-1{
-    width: 100px;
+    width: 50px;
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 450px;
+    left: 650px;
+    top: 250px;
 }
 
 .flecha-1 img{
@@ -193,7 +194,7 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 450px;
+    left: 500px;
     margin-top: 100px;
 }
 
@@ -207,7 +208,7 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 450px;
+    left: 500px;
     margin-top: 190px;
 }
 
@@ -221,7 +222,7 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 450px;
+    left: 500px;
     margin-top: 270px;
 }
 
