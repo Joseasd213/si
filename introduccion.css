@@ -58,7 +58,7 @@ body{
     justify-content: center;
     position: relative;
     z-index: 2;
-    margin-top: 660px;
+    margin-top: 1060px;
     gap: 60px;
     align-items: center;
     text-align: center;
@@ -82,7 +82,7 @@ body{
 }
 
 button{
-    padding: 20px 40px;
+    padding: 40px 60px;
     font-size: 20px;
     border: solid 2px black;
     color: black;
@@ -144,7 +144,7 @@ p{
     display: flex;
     position: relative;
     margin: 20px 0 0 0;
-    max-width: 300px;
+    width: 600px;
     padding: 20px;
     align-items: center;
     flex-direction: column;
@@ -155,11 +155,15 @@ p{
 
 .contents-2 p{
     margin: 0;
-    font-size: 16px;
+    font-size: 24px;
 }
 .content-2 h2{
     margin: 0;
-    font-size: 20px;
+    font-size: 36px;
+}
+
+.content-2 img{
+    width: 600px;
 }
 
 .bg-video-2{
