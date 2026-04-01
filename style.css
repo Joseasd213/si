@@ -51,8 +51,8 @@ a{
   margin: 0px;
   position: relative;
   top: 70px;
-  margin-left: 100px;
-  width: 1000px;
+  margin-left: 60px;
+  width: 1070px;
   display: flex;
   border-bottom: solid;
 }
@@ -123,8 +123,8 @@ a{
 .slider {
   position: relative;
   width: 950px;       /* ancho visible del slider */
-  left: -200px;
-  top: 50px;
+  left: -180px;
+  top: 20px;
   overflow: visible;   /* esconde lo que está fuera */
 }
 
