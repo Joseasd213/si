@@ -2,7 +2,7 @@
     body{
         display: flex;
         justify-content: center;
-        background: linear-gradient(to bottom, #f0f8ff, #ffffff);
+        background-color: white;
     }
 
 /*Containers*/
@@ -11,9 +11,8 @@
         width: 1600px;
         height: 3700px;
         margin: 100px;
-        background-color: #ffffff;
+        background-color: white;
         border-radius: 20px;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
     .content{
@@ -72,62 +71,74 @@
         width: 200px;
         padding: 25px 0 25px 0;
         border-radius: 10px;
-        border: solid 1px #0066cc;
+        border: solid 3px #404040;
         align-items: center;
         text-align: center;
         font-style: none;
         font-size: 30px;
         font-style: none;
-        color: #0066cc;
-        background: linear-gradient(to bottom, #cce7ff, #99d6ff);
+        color: white;
+        background: linear-gradient(135deg, #666666, #4a4a4a);
         font-weight: 400px;
         font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-        text-shadow: none;
-        transition: background 0.3s;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .next:hover{
-        background: linear-gradient(to bottom, #99d6ff, #66c2ff);
+        background: linear-gradient(135deg, #4a4a4a, #333333);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
     }
     .previous{
         width: 200px;
         padding: 25px 0 25px 0;
         border-radius: 10px;
-        border: solid 1px #0066cc;
+        border: solid 3px #404040;
         align-items: center;
         text-align: center;
         font-style: none;
         font-size: 30px;
         font-style: none;
-        color: #0066cc;
-        background: linear-gradient(to bottom, #cce7ff, #99d6ff);
+        color: white;
+        background: linear-gradient(135deg, #666666, #4a4a4a);
         font-weight: 400px;
         font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-        text-shadow: none;
-        transition: background 0.3s;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .previous:hover{
-        background: linear-gradient(to bottom, #99d6ff, #66c2ff);
+        background: linear-gradient(135deg, #4a4a4a, #333333);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
     }
 
     .leave{
         width: 200px;
         padding: 25px 0 25px 0;
         border-radius: 10px;
-        border: solid 1px #0066cc;
+        border: solid 3px #404040;
         align-items: center;
         text-align: center;
         font-style: none;
         font-size: 30px;
         font-style: none;
-        color: #0066cc;
-        background: linear-gradient(to bottom, #cce7ff, #99d6ff);
+        color: white;
+        background: linear-gradient(135deg, #666666, #4a4a4a);
         font-weight: 400px;
         font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
-        text-shadow: none;
-        transition: background 0.3s;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     }
     .leave:hover{
-        background: linear-gradient(to bottom, #99d6ff, #66c2ff);
+        background: linear-gradient(135deg, #4a4a4a, #333333);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        transform: translateY(-2px);
     }
 
 /*Atributos generales*/
@@ -149,7 +160,7 @@
         font-size: 10px;
         font-weight: bold;
         font-family: 'Segoe UI', Arial, sans-serif;
-        color: black;
+        color: rgb(255, 255, 255);
         text-transform: uppercase;
         letter-spacing: 3px;
         position: relative;
@@ -161,7 +172,7 @@
         font-size: 34px;
         font-weight: bold;
         font-family: 'Segoe UI', Arial, sans-serif;
-        color: black;
+        color: #0066cc;
         text-transform: uppercase;
         letter-spacing: 3px;
         margin-bottom: 15px;
@@ -176,11 +187,15 @@ p{
 }
 
 h1{
-    color: #0066cc;
+    color: #003d99;
     font-weight: 400px;
     font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     font-size: 60px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    background-color: #e6f3ff;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
 }
 
 h2{ 
@@ -189,6 +204,10 @@ h2{
     font-family: 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
     font-size: 50px;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    background-color: #e6f3ff;
+    padding: 15px 100px;
+    border-radius: 15px;
+    display: inline-block;
 }
 
 
