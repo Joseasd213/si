@@ -1,6 +1,7 @@
 /*Body*/
     body{
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         background-color: white;
     }
@@ -8,7 +9,7 @@
 /*Containers*/
 
     .page{
-        width: 1600px;
+        width: 2100px;
         height: 3700px;
         margin: 100px;
         background-color: white;
@@ -16,12 +17,13 @@
     }
 
     .content{
-        background-color: #e6f3ff;
-        margin: 20px;
-        padding: 35px;
+        background-color: white;
+        margin: 10px;
+        padding: 15px;
         border-radius: 15px;
         max-width: 700px;
         display: flex;
+        flex-wrap: wrap;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -45,24 +47,27 @@
     .gallery{
         display: flex;
         justify-content: center;
-        max-height: 1000px;
+        max-height: 1300px;
         flex-wrap: wrap;
         gap: 20px;
     }
 
     .buttons{
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-around;
         padding: 50px 0 0 0 ;
     }
     .button-exit{
         display: flex;
+        flex-wrap: wrap;
         margin-right: 200px;
         gap: 50px;
     }
     .button-go{
         margin-left: 200px;
         display: flex;
+        flex-wrap: wrap;
         gap: 50px;
 
     }
@@ -156,6 +161,7 @@
 
     .title1{
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         font-size: 10px;
         font-weight: bold;
@@ -168,6 +174,7 @@
 
     .title2{
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
         font-size: 34px;
         font-weight: bold;
