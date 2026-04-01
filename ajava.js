@@ -10,6 +10,15 @@
     track.scrollBy({ left: -420, behavior: 'smooth' });
     });
 
+    // Keyboard navigation for slider
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') {
+            track.scrollBy({ left: 420, behavior: 'smooth' });
+        } else if (e.key === 'ArrowLeft') {
+            track.scrollBy({ left: -420, behavior: 'smooth' });
+        }
+    });
+
     // Opcions dinamicas per a vehicles
     const vehicleButtons = document.querySelectorAll('.vehicle-btn');
     const optionsSection = document.getElementById('vehicle-options');
