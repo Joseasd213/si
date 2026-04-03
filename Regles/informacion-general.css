@@ -10,7 +10,7 @@
 
     .page{
         width: 2100px;
-        height: 3700px;
+        height: 3200px;
         margin: 100px;
         background-color: white;
         border-radius: 20px;
@@ -55,7 +55,7 @@
     .buttons{
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-around;
+        justify-content: space-between;
         padding: 50px 0 0 0 ;
     }
     .button-exit{
