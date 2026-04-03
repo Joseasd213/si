@@ -122,7 +122,6 @@ button{
 }
 
 #content {
-    display: flex;
     justify-content: center;
     position: relative;
     z-index: 2;
@@ -171,12 +170,13 @@ p{
     }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 /*Content-2*/
 
 .content-2{
+    display: flex;
     justify-content: center;
     position: relative;
     z-index: 2;
@@ -188,6 +188,7 @@ p{
 .contents-2{
     display: flex;
     position: relative;
+    justify-content: center;
     margin: 20px 0 0 0;
     width: 600px;
     padding: 20px;

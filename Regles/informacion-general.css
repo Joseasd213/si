@@ -3,7 +3,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        background-color: white;
+        background-color: rgba(172, 172, 172, 0.982);
     }
 
 /*Containers*/
@@ -12,7 +12,7 @@
         width: 2100px;
         height: 3200px;
         margin: 100px;
-        background-color: white;
+        background-color: rgba(172, 172, 172, 0.982);
         border-radius: 20px;
     }
 
