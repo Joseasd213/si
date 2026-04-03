@@ -70,7 +70,8 @@ body{
 
 /* 👇 solo cuando pasas el ratón */
 #como:hover {
-    transform: scale(1.1);   
+    transform: scale(1.08);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 #jugar{
@@ -78,16 +79,61 @@ body{
 }
 
 #jugar:hover {
-    transform: scale(1.1);
+    transform: scale(1.08);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+#content > .contents:nth-child(2) {
+    transition: transform 0.3s ease;
+}
+
+#content > .contents:nth-child(2):hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
 }
 
 button{
-    padding: 40px 60px;
-    font-size: 20px;
-    border: solid 2px black;
-    color: black;
-    border-radius: 10px;
+    padding: 28px 50px;
+    font-size: 22px;
+    border: none;
+    color: #000;
+    border-radius: 14px;
     cursor: pointer;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+}
+
+#como button {
+    background: linear-gradient(135deg, #facc15, #eab308);
+    color: #000;
+}
+
+#content > .contents:nth-child(2) button {
+    background-color: white;
+    color: #000;
+}
+
+#jugar button {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(34, 197, 94, 0.5);
+}
+
+#content {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+    margin-top: 800px;
+    gap: 40px;
+    align-items: center;
+    text-align: center;
+}
+
+.contents button:hover {
+    opacity: 0.98;
 }
 
 /*Palabras*/
@@ -124,14 +170,13 @@ p{
         font-size: 30px;
     }
 
-    .hidden{
-        display: none;
+.hidden {
+    display: none;
 }
 
 /*Content-2*/
 
 .content-2{
-    display: flex;
     justify-content: center;
     position: relative;
     z-index: 2;

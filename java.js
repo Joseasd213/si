@@ -46,19 +46,27 @@ function mostrarPagina() {
     }
 }
 
-function comojugar() {
+function mostrarExplicacion() {
+    // Click en "¿Cómo se juega?"
     buttons.classList.remove("hidden");
     content.classList.add("hidden");
     explicacion.classList.remove("hidden");
 
     paginaActual = 1;
+    mostrarPagina();
     actualizarVista();
 }
 
-botonComo.addEventListener("click", comojugar);
+botonComo.addEventListener("click", mostrarExplicacion);
+
+// Opcional: el botón tutorial también muestra la explicación inicial
+const botonTutorial = document.querySelector("#content .contents:nth-child(2) button");
+if (botonTutorial) {
+    botonTutorial.addEventListener("click", mostrarExplicacion);
+}
 
 function jugar() {
-    console.log("jugarrrrr");
+    window.location.href = "menu.html";
 }
 
 botonJugar.addEventListener("click", jugar);
@@ -99,7 +107,8 @@ function actualizarVista(){
     play.classList.add("hidden");
     advice.classList.add("hidden");
     reglas.classList.add("hidden");
-    manual.classList.remove("hidden")
+    salir.classList.add("hidden");
+    manual.classList.remove("hidden");
 
     if (paginaActual === 1) {
         purpose.classList.remove("hidden");
@@ -112,7 +121,6 @@ function actualizarVista(){
     }
     if (paginaActual === 4) {
         play.classList.remove("hidden");
-        manual.classList.remove("hidden")
     }
     if (paginaActual === 5) {
         advice.classList.remove("hidden");
@@ -123,22 +131,28 @@ function actualizarVista(){
     if (paginaActual === 7) {
         salir.classList.remove("hidden");
     }
-
-
 }
 
-// Selecciona el botón "Jugar"
-
-// Al hacer click, redirige a menu.html
+// Refuerzo seguro para el botón "Jugar".
 botonJugar.addEventListener("click", () => {
     window.location.href = "menu.html";
 });
 
+// Opcional: si hay contenedor con desplazamiento horizontal, usar next/prev sin romper la app.
+const scrollTrack = document.querySelector(".track");
+const scrollNext = document.querySelector(".next");
+const scrollPrev = document.querySelector(".previous");
 
-    next.addEventListener('click', () => {
-    track.scrollBy({ left: 420, behavior: 'smooth' });
+if (scrollTrack && scrollNext && scrollPrev) {
+    scrollNext.addEventListener('click', () => {
+        scrollTrack.scrollBy({ left: 420, behavior: 'smooth' });
     });
 
-    prev.addEventListener('click', () => {
-    track.scrollBy({ left: -420, behavior: 'smooth' });
+    scrollPrev.addEventListener('click', () => {
+        scrollTrack.scrollBy({ left: -420, behavior: 'smooth' });
     });
+}
+
+// Inicialización de vista
+mostrarPagina();
+actualizarVista();
