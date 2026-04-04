@@ -1,0 +1,13 @@
+/*Body*/
+
+body{
+    background-image: url(images/fondo-.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/*Containers*/
+
+.container-1{
+   background-color: white  ; 
+}
