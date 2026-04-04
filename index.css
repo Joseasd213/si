@@ -274,3 +274,11 @@ a {
         font-size: 24px;
     }
 }
+
+.content{
+    background: linear-gradient(135deg, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0.9));
+    border-radius: 20px;
+    margin: 20px;
+    padding: 20px;
+}
+
