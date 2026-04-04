@@ -62,10 +62,10 @@ a {
 .header-content {
     max-width: 1200px;
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: var(--spacing-xl);
+    display: flex;
+    justify-content: space-between;
     align-items: center;
+    gap: var(--spacing-xl);
     padding: 0 var(--spacing-lg);
 }
 
@@ -194,6 +194,8 @@ a {
     gap: var(--spacing-lg);
     margin-top: var(--spacing-xl);
     animation: fadeInUp 0.8s ease-out;
+    display: flex;
+    justify-content: space-around;
 }
 
 .team-section h2 {
@@ -201,6 +203,7 @@ a {
     font-weight: 700;
     color: var(--accent-color);
     text-align: center;
+
 }
 
 .team-image {
