@@ -9,5 +9,46 @@ body{
 /*Containers*/
 
 .container-1{
-   background-color: white  ; 
+    background-color: rgba(255, 255, 255, 0.8);
+    align-items: center;
+    text-align: center;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+
+/*Image*/
+
+.container-1 img{
+    max-width: 400px;
+    margin: 20px;
+}
+
+.container-2{
+    background-color: rgba(255, 255, 255, 0.8);
+    align-items: center;
+    text-align: center;
+    display: grid;
+    grid-template-columns: auto 1fr;
+}
+
+/*Mini-containers*/
+
+.words{
+    display: flex;
+    margin-left: auto;
+    margin-right: 20px;
+    gap: 80px;
+}
+
+
+/*Words*/
+
+.words p{
+    font-size: 26px;
+}
+
+a{
+    text-decoration: none;
+    color: black;
 }
