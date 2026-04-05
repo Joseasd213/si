@@ -264,3 +264,7 @@ a{
   padding: 30px 50px;
 }
 
+.hidden {
+  display: none;
+}
+
