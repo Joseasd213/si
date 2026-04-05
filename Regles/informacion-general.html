@@ -28,6 +28,223 @@
                 <div id="camiones" style="font-size: 40px; color: white;" class="content"><p style="background-color: rgb(19, 109, 179); font-size: 30px; padding: 30px 60px;">Camiones</p><img style="width: 220px;" src="imagenes/camion.png" alt=""></div>
             </div>
         </div>
+
+        <div class="vehicle-detail hidden" id="vmp-detail" style="background: linear-gradient(135deg, rgb(227, 240, 246) 0%, rgb(200, 230, 250) 100%); border-radius: 50px; margin-top: 50px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <section class="title2" style="margin-bottom: 30px;"><h2 style="background: linear-gradient(45deg, #ff6600, #ff9933); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🛴 VMP (Vehículo de Movilidad Personal)</h2></section>
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 40px;">
+                <div style="position: relative;">
+                    <img style="width: 350px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);" src="imagenes/vmp.png" alt="VMP">
+                    <div style="position: absolute; top: 10px; right: 10px; background: #ff6600; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🛴</div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #ff6600; font-size: 36px; margin-bottom: 20px;">Características</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Los VMP, como los patinetes eléctricos, son vehículos ligeros pensados para desplazamientos cortos en ciudad.</p>
+                    <div class="characteristics">
+                        <div class="char-item"><span class="icon">🚶</span> Velocidad limitada</div>
+                        <div class="char-item"><span class="icon">📏</span> Tamaño reducido</div>
+                        <div class="char-item"><span class="icon">🛡️</span> Sin protección para el conductor</div>
+                        <div class="char-item"><span class="icon">🛞</span> Fácil manejo</div>
+                        <div class="char-item"><span class="icon">⚠️</span> Alta exposición a accidentes</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 40px; background: rgba(255, 102, 0, 0.1); padding: 30px; border-radius: 20px; border-left: 5px solid #ff6600; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #ff6600; font-size: 40px; margin-bottom: 25px;">📖 Explicación</h3>
+                <p style="font-size: 20px; line-height: 1.8; color: #333;">Los VMP son muy prácticos para moverse por zonas urbanas, pero también son vulnerables debido a su tamaño y falta de protección. No están diseñados para altas velocidades ni para vías rápidas, por lo que deben utilizarse con precaución y respetando las normas de circulación.</p>
+            </div>
+            <section class="title2" style="margin-top: 40px; margin-bottom: 30px;"><h2 style="color: rgb(90, 143, 55); background: linear-gradient(45deg, rgb(90, 143, 55), rgb(120, 180, 80)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Carreteras Permitidas</h2></section>
+            <div class="roads-container">
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/urbanas.png" alt="Urbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Urbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Interurbanas">
+                    <div class="check-overlay danger">❌</div>
+                    <div class="road-label">Interurbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Travesía">
+                    <div class="check-overlay warning">⚠️</div>
+                    <div class="road-label">Travesía (según normativa)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vehicle-detail hidden" id="ciclos-detail" style="background: linear-gradient(135deg, rgb(227, 240, 246) 0%, rgb(200, 230, 250) 100%); border-radius: 50px; margin-top: 50px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <section class="title2" style="margin-bottom: 30px;"><h2 style="background: linear-gradient(45deg, #0099cc, #33ccff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🚲 Ciclos</h2></section>
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 40px;">
+                <div style="position: relative;">
+                    <img style="width: 350px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);" src="imagenes/ciclo.png" alt="Ciclos">
+                    <div style="position: absolute; top: 10px; right: 10px; background: #0099cc; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🚲</div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #0099cc; font-size: 36px; margin-bottom: 20px;">Características</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Las bicicletas son vehículos ligeros y ecológicos, ideales para transporte individual y ejercicio.</p>
+                    <div class="characteristics">
+                        <div class="char-item"><span class="icon">🐢</span> Velocidad baja-media</div>
+                        <div class="char-item"><span class="icon">🌀</span> Alta maniobrabilidad</div>
+                        <div class="char-item"><span class="icon">🛡️</span> Sin protección para el ciclista</div>
+                        <div class="char-item"><span class="icon">🅿️</span> Fácil de estacionar y transportar</div>
+                        <div class="char-item"><span class="icon">⚠️</span> Exposición al entorno y al tráfico</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 40px; background: rgba(0, 153, 204, 0.1); padding: 30px; border-radius: 20px; border-left: 5px solid #0099cc; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #0099cc; font-size: 40px; margin-bottom: 25px;">📖 Explicación</h3>
+                <p style="font-size: 20px; line-height: 1.8; color: #333;">Los ciclos son muy prácticos en ciudad y zonas recreativas. Su tamaño pequeño y ligereza permiten moverse fácilmente, pero carecen de protección frente a otros vehículos, por lo que el riesgo de lesiones existe. Se recomienda el uso de casco y ropa visible, así como respetar las normas de tráfico.</p>
+            </div>
+            <section class="title2" style="margin-top: 40px; margin-bottom: 30px;"><h2 style="color: rgb(90, 143, 55); background: linear-gradient(45deg, rgb(90, 143, 55), rgb(120, 180, 80)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Carreteras Permitidas</h2></section>
+            <div class="roads-container">
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/urbanas.png" alt="Urbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Urbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Interurbanas">
+                    <div class="check-overlay warning">⚠️</div>
+                    <div class="road-label">Interurbana (según normativa y ciclo-rutas)</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Travesía">
+                    <div class="check-overlay danger">❌</div>
+                    <div class="road-label">Travesía</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vehicle-detail hidden" id="turismo-detail" style="background: linear-gradient(135deg, rgb(227, 240, 246) 0%, rgb(200, 230, 250) 100%); border-radius: 50px; margin-top: 50px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <section class="title2" style="margin-bottom: 30px;"><h2 style="background: linear-gradient(45deg, #0066cc, #0099ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🚗 Turismo</h2></section>
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 40px;">
+                <div style="position: relative;">
+                    <img style="width: 350px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);" src="imagenes/turismo.png" alt="Turismo">
+                    <div style="position: absolute; top: 10px; right: 10px; background: green; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px;">✓</div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #0066cc; font-size: 36px; margin-bottom: 20px;">Características</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">El turismo es el vehículo más común y equilibrado para la conducción diaria. Está diseñado para transportar personas de forma cómoda y segura.</p>
+                    <div class="characteristics">
+                        <div class="char-item"><span class="icon">🚀</span> Velocidad media-alta</div>
+                        <div class="char-item"><span class="icon">⚖️</span> Buena estabilidad</div>
+                        <div class="char-item"><span class="icon">🛡️</span> Mayor protección que motos o bicicletas</div>
+                        <div class="char-item"><span class="icon">🛞</span> Fácil manejo</div>
+                        <div class="char-item"><span class="icon">🔄</span> Versátil para distintos tipos de vías</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 40px; background: rgba(0, 102, 204, 0.1); padding: 30px; border-radius: 20px; border-left: 5px solid #0066cc; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #0066cc; font-size: 40px; margin-bottom: 25px;">📖 Explicación</h3>
+                <p style="font-size: 20px; line-height: 1.8; color: #333;">El turismo ofrece un buen equilibrio entre seguridad, comodidad y rendimiento. Gracias a su estructura cerrada y sistemas de seguridad, protege mejor a los ocupantes en caso de accidente. Además, es más fácil de conducir que vehículos grandes como camiones, lo que lo hace ideal para la mayoría de conductores.</p>
+            </div>
+            <section class="title2" style="margin-top: 40px; margin-bottom: 30px;"><h2 style="color: rgb(90, 143, 55); background: linear-gradient(45deg, rgb(90, 143, 55), rgb(120, 180, 80)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Carreteras Permitidas</h2></section>
+            <div class="roads-container">
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/urbanas.png" alt="Urbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Urbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Interurbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Interurbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Travesía">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Travesía</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="vehicle-detail hidden" id="moto-detail" style="background: linear-gradient(135deg, rgb(227, 240, 246) 0%, rgb(200, 230, 250) 100%); border-radius: 50px; margin-top: 50px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <section class="title2" style="margin-bottom: 30px;"><h2 style="background: linear-gradient(45deg, #cc0000, #ff3333); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🏍️ Moto</h2></section>
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 40px;">
+                <div style="position: relative;">
+                    <img style="width: 350px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);" src="imagenes/moto.png" alt="Moto">
+                    <div style="position: absolute; top: 10px; right: 10px; background: orange; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px;">⚠️</div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #cc0000; font-size: 36px; margin-bottom: 20px;">Características</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Las motocicletas son vehículos rápidos y ágiles, pero con menor protección para el conductor.</p>
+                    <div class="characteristics">
+                        <div class="char-item"><span class="icon">🚀</span> Alta velocidad</div>
+                        <div class="char-item"><span class="icon">🏍️</span> Gran agilidad y maniobrabilidad</div>
+                        <div class="char-item"><span class="icon">🛡️</span> Baja protección en caso de accidente</div>
+                        <div class="char-item"><span class="icon">⚠️</span> Mayor riesgo de lesiones graves</div>
+                        <div class="char-item"><span class="icon">🌬️</span> Mayor exposición al entorno</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 40px; background: rgba(204, 0, 0, 0.1); padding: 30px; border-radius: 20px; border-left: 5px solid #cc0000; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #cc0000; font-size: 40px; margin-bottom: 25px;">📖 Explicación</h3>
+                <p style="font-size: 20px; line-height: 1.8; color: #333;">Las motos permiten moverse fácilmente entre el tráfico y reaccionar rápido, pero también son más peligrosas. Al no tener carrocería que proteja al conductor, cualquier accidente puede tener consecuencias más graves. Por eso es muy importante usar equipamiento de protección y conducir con precaución.</p>
+            </div>
+            <section class="title2" style="margin-top: 40px; margin-bottom: 30px;"><h2 style="color: rgb(90, 143, 55); background: linear-gradient(45deg, rgb(90, 143, 55), rgb(120, 180, 80)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Carreteras Permitidas</h2></section>
+            <div class="roads-container">
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/urbanas.png" alt="Urbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Urbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Interurbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Interurbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 250px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Travesía">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Travesía</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="vehicle-detail hidden" id="camion-detail" style="background: linear-gradient(135deg, rgb(227, 240, 246) 0%, rgb(200, 230, 250) 100%); border-radius: 50px; margin-top: 50px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+            <section class="title2" style="margin-bottom: 30px;"><h2 style="background: linear-gradient(45deg, #8B4513, #A0522D); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🚚 Camiones</h2></section>
+            <div style="display: flex; align-items: center; gap: 40px; margin-bottom: 40px;">
+                <div style="position: relative;">
+                    <img style="width: 350px; border-radius: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.3);" src="imagenes/camion.png" alt="Camiones">
+                    <div style="position: absolute; top: 10px; right: 10px; background: #8B4513; color: white; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🚚</div>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="color: #8B4513; font-size: 36px; margin-bottom: 20px;">Características</h3>
+                    <p style="font-size: 18px; margin-bottom: 20px;">Los camiones son vehículos grandes y pesados diseñados para el transporte de mercancías. Aunque ofrecen una gran estabilidad, tienen limitaciones importantes en maniobrabilidad y visibilidad.</p>
+                    <div class="characteristics">
+                        <div class="char-item"><span class="icon">📏</span> Gran tamaño y peso</div>
+                        <div class="char-item"><span class="icon">🐌</span> Baja aceleración</div>
+                        <div class="char-item"><span class="icon">🛑</span> Larga distancia de frenado</div>
+                        <div class="char-item"><span class="icon">👁️‍🗨️</span> Amplios ángulos muertos (puntos ciegos)</div>
+                        <div class="char-item"><span class="icon">⚖️</span> Mayor estabilidad en carretera</div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-bottom: 40px; background: rgba(139, 69, 19, 0.1); padding: 30px; border-radius: 20px; border-left: 5px solid #8B4513; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                <h3 style="color: #8B4513; font-size: 40px; margin-bottom: 25px;">📖 Explicación</h3>
+                <p style="font-size: 20px; line-height: 1.8; color: #333;">Debido a su tamaño y peso, los camiones necesitan más espacio para maniobrar y frenar. Esto hace que reaccionen más lentamente ante imprevistos. Además, el conductor tiene puntos ciegos donde no puede ver otros vehículos, lo que aumenta el riesgo si los demás conductores no mantienen distancia.</p>
+            </div>
+            <section class="title2" style="margin-top: 40px; margin-bottom: 30px;"><h2 style="color: rgb(90, 143, 55); background: linear-gradient(45deg, rgb(90, 143, 55), rgb(120, 180, 80)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Carreteras Permitidas</h2></section>
+            <div class="roads-container">
+                <div class="road-card">
+                    <img style="width: 450px; border-radius: 15px;" src="imagenes/urbanas.png" alt="Urbanas">
+                    <div class="check-overlay warning">⚠️</div>
+                    <div class="road-label">Urbana (con restricciones)</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 450px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Interurbanas">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Interurbana</div>
+                </div>
+                <div class="road-card">
+                    <img style="width: 450px; border-radius: 15px;" src="imagenes/interurbanas.png" alt="Travesía">
+                    <div class="check-overlay">✅</div>
+                    <div class="road-label">Travesía</div>
+                </div>
+            </div>
+        </div>
+
         <div style="background-color: rgb(239, 243, 223); border-radius: 50px; margin-top: 50px;">
             <section class="title2"><h2 style="color: rgb(90, 143, 55);">Carreteras</h2></section>
             <div class="gallery">

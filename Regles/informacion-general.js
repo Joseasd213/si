@@ -7,6 +7,31 @@ vehicleDivs.forEach(div => {
     });
 });
 
+// Evento específico para mostrar detalle de vmp
+document.getElementById('vmp').addEventListener('click', () => {
+    document.getElementById('vmp-detail').classList.remove('hidden');
+});
+
+// Evento específico para mostrar detalle de ciclos
+document.getElementById('ciclos').addEventListener('click', () => {
+    document.getElementById('ciclos-detail').classList.remove('hidden');
+});
+
+// Evento específico para mostrar detalle de turismo
+document.getElementById('turimos').addEventListener('click', () => {
+    document.getElementById('turismo-detail').classList.remove('hidden');
+});
+
+// Evento específico para mostrar detalle de moto
+document.getElementById('motos').addEventListener('click', () => {
+    document.getElementById('moto-detail').classList.remove('hidden');
+});
+
+// Evento específico para mostrar detalle de camion
+document.getElementById('camiones').addEventListener('click', () => {
+    document.getElementById('camion-detail').classList.remove('hidden');
+});
+
 // Función para ocultar secciones al hacer clic en carreteras
 const carreteraDivs = document.querySelectorAll('#interurbana, #urbanas');
 carreteraDivs.forEach(div => {
