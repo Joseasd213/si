@@ -122,8 +122,8 @@ a{
 /* Slider */
 .slider {
   position: relative;
-  width: 950px;       /* ancho visible del slider */
-  left: -180px;
+  width: 980px;       /* ancho visible del slider */
+  left: -200px;
   top: 20px;
   overflow: visible;   /* esconde lo que está fuera */
 }
