@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Interurbana - Juego</title>
+  <link rel="stylesheet" href="interurbana.css">
+</head>
+<body>
+
+  <h2>🚗 Conducción Responsable — Interurbana</h2>
+
+  <div id="hud">
+    <div>
+      🍺 Intoxicación
+      <div class="bar"><div id="alcohol" class="fill"></div></div>
+    </div>
+    <div>
+      📱 Distracción
+      <div class="bar"><div id="distract" class="fill"></div></div>
+    </div>
+  </div>
+
+  <p id="controls">Controles: W A S D para mover — Flechas ↑ ↓ para subir/bajar la velocidad (también aumenta la velocidad del coche) — R para resistir eventos — Q para aceptar</p>
+  <p>Velocidad (obstáculos / flujo / coche): <span id="speed">60</span> km/h</p>
+  <p id="event"></p>
+  <p id="eventPrompt"></p>
+
+  <canvas id="game" width="360" height="700"></canvas>
+
+  <script src="interurbana.js"></script>
+</body>
+</html>

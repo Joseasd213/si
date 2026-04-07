@@ -28,6 +28,7 @@
     const optionCards = document.querySelectorAll('.option-card');
 
     let selectedOption = null;
+    let selectedVehicle = null;
 
     function showVehicleOptions(vehicle) {
         vehicleTitle.textContent = `Opcions per a ${vehicle}`;
@@ -43,6 +44,7 @@
     vehicleButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             const vehicle = btn.dataset.vehicle || btn.textContent.trim();
+            selectedVehicle = vehicle;
             showVehicleOptions(vehicle);
         });
     });
@@ -56,8 +58,11 @@
     });
 
     acceptButton.addEventListener('click', () => {
-        if (selectedOption) {
-            window.location.href = selectedOption + '.html';
+        if (selectedOption && selectedVehicle) {
+            // Guardar elecciones en localStorage
+            localStorage.setItem('selectedVehicle', selectedVehicle);
+            localStorage.setItem('selectedRoad', selectedOption);
+            window.location.href = 'Juegos/' + selectedOption + '/' + selectedOption + '.html';
         } else {
             alert('Por favor, selecciona una opción.');
         }

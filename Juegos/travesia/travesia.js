@@ -64,11 +64,11 @@ const events = [
 
 // --- Dibujo ---
 function drawRoad() {
-  ctx.fillStyle = "#555";
+  ctx.fillStyle = "#333";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   // Dibujar carriles
-  ctx.strokeStyle = "#777";
+  ctx.strokeStyle = "#666";
   ctx.lineWidth = 2;
   ctx.setLineDash([10, 10]);
 
@@ -333,6 +333,7 @@ function loop() {
   car.x += car.speedX;
   car.y += car.speedY;
 
+  // Mantener el coche dentro de los límites (fijado)
   if (car.x < 0) car.x = 0;
   if (car.x + car.w > canvas.width) car.x = canvas.width - car.w;
   if (car.y < 0) car.y = 0;

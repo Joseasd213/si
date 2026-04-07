@@ -1,0 +1,58 @@
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+
+canvas {
+  background: #444;
+  display: block;
+  margin: 10px auto;
+  border: 3px solid white;
+}
+
+#hud {
+  display: flex;
+  justify-content: space-around;
+  max-width: 600px;
+  margin: 6px auto;
+}
+
+.bar {
+  width: 200px;
+  height: 18px;
+  background: #333;
+  border: 1px solid white;
+}
+
+.fill {
+  height: 100%;
+  width: 0%;
+}
+
+#alcohol {
+  background: orange;
+}
+
+#distract {
+  background: cyan;
+}
+
+#event {
+  margin-top: 8px;
+  min-height: 36px;
+}
+
+#eventPrompt {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #ccc;
+}
+
+#controls {
+  font-size: 13px;
+  color: #bbb;
+  margin-bottom: 6px;
+}
