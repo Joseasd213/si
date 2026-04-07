@@ -149,6 +149,7 @@ a{
   border-radius: 8px;
   position: relative;
   overflow: hidden;
+  align-items: center;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -172,6 +173,7 @@ a{
   font-size: 20px;
   cursor: pointer;
   flex-wrap: wrap;
+  margin-left: 60px;
   transition: transform 0.3s ease, background 0.3s ease;
 }
 
