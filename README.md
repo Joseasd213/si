@@ -1,122 +1,105 @@
 # 🚗 Highway Consequences
 
-## 📌 Descripción del proyecto
-**Highway Consequences** es un videojuego educativo de conducción con vista superior desarrollado como parte del concurso *Joves i Mobilitat – RACC*.  
-
-El objetivo del juego es concienciar a los usuarios, especialmente a los jóvenes, sobre los riesgos reales en la carretera, como las distracciones o la conducción bajo los efectos del alcohol.
-
-A través de una experiencia interactiva, el jugador deberá tomar decisiones mientras conduce, enfrentándose a eventos aleatorios que afectan directamente al control del vehículo.
+**Highway Consequences** es un videojuego educativo de conducción con vista superior desarrollado para el concurso *Joves i Mobilitat – RACC*.  
+El proyecto combina un juego interactivo con una página web que proporciona información básica sobre vías, vehículos y seguridad vial.
 
 ---
 
-## 🎮 ¿Cómo funciona?
-- El jugador controla un vehículo usando el teclado (WASD + flechas).
-- Puede elegir el tipo de vehículo y la vía.
-- Durante la partida aparecen **eventos aleatorios**:
-  - Distracciones (móvil, notificaciones, pensamientos)
-  - Intoxicación (alcohol)
-- El jugador puede:
-  - ✅ Resistir (presionando una tecla repetidamente)
-  - ❌ Aceptar la situación
+## 📌 Descripción
+El objetivo es concienciar a los usuarios, especialmente jóvenes, sobre los riesgos de la conducción irresponsable, como distracciones o alcohol.  
+Durante la partida, los eventos aleatorios afectan directamente al vehículo, y las decisiones del jugador determinan los resultados mostrados mediante **cinemáticas** de accidentes.  
 
-👉 Dependiendo de sus decisiones:
-- Se aplican **debuffs** (retraso, inversión de controles, etc.)
-- Aumenta el riesgo de accidente
+La página web complementa el juego proporcionando información básica y visual sobre normas de tráfico, tipos de vías y consejos de seguridad vial.
+
+---
+
+## 🎮 Cómo jugar
+- Control del vehículo: **WASD + flechas**  
+- Selección de vehículo y tipo de vía  
+- Eventos aleatorios durante la conducción:  
+  - Distracciones (móvil, notificaciones, pensamientos)  
+  - Intoxicación (alcohol)  
+- Opciones del jugador:  
+  - ✅ Resistir (tecla repetida)  
+  - ❌ Aceptar la situación  
+
+> No hay puntuación ni consejos finales; solo se muestran **cinemáticas** que ilustran accidentes según las decisiones tomadas.
 
 ---
 
 ## 🧠 Objetivo educativo
-El juego no solo busca entretener, sino enseñar que:
+El proyecto busca enseñar que:
 
 > **Cada decisión al volante tiene consecuencias.**
 
 El jugador aprende:
-- Normas básicas de circulación
-- Riesgos de distracción
-- Consecuencias de una conducción irresponsable
+- Normas básicas de circulación  
+- Riesgos de distracción  
+- Consecuencias de la conducción irresponsable  
 
 ---
 
 ## 🛠️ Tecnologías utilizadas
-- **HTML** → estructura del juego
-- **CSS** → diseño visual
-- **JavaScript** → lógica del juego
-- **Pixel Art** → estilo gráfico
-- **IA (ChatGPT, Copilot)** → apoyo en código, ideas y diseño
+- **HTML** → estructura de la web y el juego  
+- **CSS** → diseño visual  
+- **JavaScript** → lógica del juego y eventos  
+- **Pixel Art** → estilo gráfico  
+- **IA (ChatGPT, Copilot)** → apoyo en código, ideas y diseño  
 
 ---
 
 ## ⚙️ Proceso de desarrollo
-El proyecto se desarrolló siguiendo estas fases:
+1. **Investigación**  
+   - Accidentes, causas y normas de tráfico  
 
-1. 📚 **Investigación**
-   - Estudio de accidentes y causas
-   - Normas de circulación
+2. **Lluvia de ideas**  
+   - Concepto del juego y de la web  
+   - Mecánicas principales  
 
-2. 💡 **Lluvia de ideas**
-   - Definición del concepto del juego
-   - Mecánicas principales
+3. **Diseño e ilustraciones**  
+   - Bocetos, ilustraciones, imágenes y videos  
+   - Diseño de la web y menús  
 
-3. 🎨 **Diseño**
-   - Bocetos a mano
-   - Interfaz y pantallas
+4. **Desarrollo**  
+   - Programación del diseño y menús (un integrante)  
+   - Programación de la lógica del juego (otro integrante)  
 
-4. 💻 **Desarrollo**
-   - Programación en HTML, CSS y JavaScript
-   - Implementación de eventos y mecánicas
+5. **Pruebas**  
+   - Corrección de errores y ajustes de jugabilidad  
 
-5. 🧪 **Pruebas**
-   - Corrección de errores
-   - Mejora de jugabilidad
-
-6. 🚀 **Entrega final**
-   - Documentación
-   - Preparación del proyecto
+6. **Entrega final**  
+   - Documentación y publicación  
 
 ---
 
-## 👥 Integrantes
+## 👥 Equipo
 - **Jiachen**  
-  - Planificación  
-  - Diseño  
-  - Desarrollo del codigo y diseño  
+  - Ilustraciones, diseño, imágenes y videos  
+  - Programación del diseño y menús de la web  
   - Documentación  
 
 - **Santiago**  
-  - Desarrollo del código juego
-  - Apoyo en diseño  
-  - Implementación técnica  
+  - Programación de la lógica del juego  
+  - Implementación de eventos y mecánicas  
 
 ---
 
-## 🎯 Características principales
-- Sistema de eventos aleatorios
-- Mecánica de decisiones (resistir / aceptar)
-- Debuffs progresivos (intoxicación y distracción)
-- Sistema de normas reales de tráfico
-- Pantalla final con:
-  - Infracciones
-  - Puntuación
-  - Consejos
+## 🎯 Características
+- Eventos aleatorios que simulan distracciones e intoxicación  
+- Decisiones del jugador (resistir / aceptar)  
+- Debuffs progresivos  
+- Sistema de normas reales de tráfico  
+- Cinemáticas de accidentes según las decisiones  
+- Página web con información básica sobre vías y vehículos  
 
 ---
 
 ## ⚠️ Mensaje final
 > Conducir no es un juego.  
-> Pero aprender a hacerlo bien puede empezar en uno.
-
----
-
-## 📎 Estado del proyecto
-🔧 En desarrollo / mejora continua  
+> Este proyecto muestra, de forma visual y simulada, las consecuencias de la conducción irresponsable.
 
 ---
 
 ## 🌐 Enlaces
-- Web del juego: *(añadir URL aquí)*
-- Vídeo demo: *(añadir URL aquí)*
-
----
-
-## 📄 Licencia
-Proyecto educativo sin fines comerciales.
+- Web del juego: *(añadir URL aquí)*  
+- Vídeo demo: *(añadir URL aquí)*  
