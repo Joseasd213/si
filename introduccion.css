@@ -225,8 +225,8 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 800px;
-    top: 300px;
+    left: 650px;
+    top: 250px;
 }
 
 .flecha-1 img{
@@ -240,8 +240,8 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 750px;
-    margin-top: 180px;
+    left: 500px;
+    margin-top: 100px;
 }
 
 .flecha-2 img{
@@ -254,8 +254,8 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 750px;
-    margin-top: 300px;
+    left: 500px;
+    margin-top: 190px;
 }
 
 .flecha-3 img{
@@ -268,8 +268,8 @@ p{
     height: 50px;
     position: absolute;
     rotate: 180deg;
-    left: 750px;
-    margin-top: 400px;
+    left: 500px;
+    margin-top: 270px;
 }
 
 .flecha-4 img{
