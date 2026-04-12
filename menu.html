@@ -1,12 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Highway Consequences - Menu</title>
+
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="image/image.png" type="image/png">
+
     <style>
         .option-card.selected {
             border: 2px solid #fff;
@@ -14,70 +15,140 @@
         }
     </style>
 </head>
+
 <body>
-    <main class="background">
-        <section class="container-1">
-            <h2>MENU</h2>
-            <div class="button"><a href="alchol.html"><p>JUGAR</p></a></div>
-            <div class="button"><a target="_blank" href="Regles/informacion-general.html"><p>CONSEJOS</p></a></div>
-            <div class="button"><a target="_blank" href="Regles/informacion-general.html"><p>INFORMACION GENERAL</p></a></div>
-            <div class="button"><a target="_blank" href="index.html"><p>SALIR</p></a></div>
-        </section>
+<main class="background">
+
+    <!-- MENU -->
+    <section class="container-1">
+        <h2>MENU</h2>
+
+        <div class="button">
+            <a href="alchol.html"><p>JUGAR</p></a>
+        </div>
+
+        <div class="button">
+            <a target="_blank" href="Regles/informacion-general.html"><p>CONSEJOS</p></a>
+        </div>
+
+        <div class="button">
+            <a target="_blank" href="Regles/informacion-general.html"><p>INFORMACION GENERAL</p></a>
+        </div>
+
+        <div class="button">
+            <a target="_blank" href="index.html"><p>SALIR</p></a>
+        </div>
+    </section>
+
+    <!-- TITULO -->
     <div class="container-2">
         <section class="container-3">
             <h2>Selecciona el teu vehicle</h2>
         </section>
     </div>
-        <section class="productos">
-            <div class="slider">
-                <button class="arrow left">&#10094;</button>
-                <div class="slider-track">
+
+    <!-- SLIDER -->
+    <section class="productos">
+        <div class="slider">
+
+            <button class="arrow left">&#10094;</button>
+
+            <div class="slider-track">
+
                 <div class="card">
                     <img src="images/coche.png" alt="Shox">
                     <button class="badge vehicle-btn" data-vehicle="Turismo">Turismo</button>
                 </div>
+
                 <div class="card">
                     <img src="images/vmp.png" alt="Air Jordan">
                     <button class="badge vehicle-btn" data-vehicle="Autobus">VMP</button>
                 </div>
+
                 <div class="card">
                     <img src="images/moto.png" alt="P-6000">
                     <button class="badge vehicle-btn" data-vehicle="Motocicleta">Motocicleta</button>
                 </div>
+
                 <div class="card">
                     <img style="width: 250px;" src="images/bici.png" alt="Ciclos">
                     <button class="badge vehicle-btn" data-vehicle="Ciclos">Ciclos</button>
                 </div>
+
                 <div class="card">
                     <img src="images/camion.png" alt="Camiones">
                     <button class="badge vehicle-btn" data-vehicle="Camiones">Camiones</button>
                 </div>
-        </div><button class="arrow right">&#10095;</button></div>
-        </section>
-        
-        <section id="vehicle-options" style="position: absolute; top: 220px; left: 110px; right: 110px; display:none; margin: 0; padding: 15px; background: rgba(0,0,0,0.65); border: 2px solid #fff; border-radius: 12px; color: white; z-index: 100;">
-            <h3 id="vehicle-title">Opcions</h3>
-            <div class="option-grid" style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
-                <div class="option-card" data-type="interurbana" style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
-                    <h4>Interurbana</h4>
-                    <img src="Regles/imagenes/interurbanas.png" alt="Interurbana" style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">
-                </div>
-                <div class="option-card" data-type="urbana" style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
-                    <h4>Urbana</h4>
-                    <img src="Regles/imagenes/urbanas.png" alt="Urbana" style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">
-                </div>
-                <div class="option-card" data-type="travesia" style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px; padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
-                    <h4>Travesia</h4>
-                <img src="Regles/imagenes/travesia.png" alt="Travesia" style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">                </div>
-            </div>
-            <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
-                <button id="accept-button" style="padding: 8px 16px; border-radius: 5px; border: none; background: green; color: white; cursor: pointer;">Aceptar</button>
-                <button id="deny-button" style="padding: 8px 16px; border-radius: 5px; border: none; background: red; color: white; cursor: pointer;">Denegar</button>
-            </div>
-        </section>
-        
-    </main>
 
-    <script src="ajava.js"></script>
+            </div>
+
+            <button class="arrow right">&#10095;</button>
+
+        </div>
+    </section>
+
+    <!-- OPCIONES VEHICULO -->
+    <section id="vehicle-options"
+        style="position: absolute; top: 220px; left: 110px; right: 110px;
+        display:none; padding: 15px; background: rgba(0,0,0,0.65);
+        border: 2px solid #fff; border-radius: 12px; color: white; z-index: 100;">
+
+        <h3 id="vehicle-title">Opcions</h3>
+
+        <div class="option-grid"
+            style="display: flex; gap: 16px; flex-wrap: wrap; margin-top: 12px;">
+
+            <!-- INTERURBANA -->
+            <div class="option-card" data-type="interurbana"
+                style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px;
+                padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
+
+                <h4>Interurbana</h4>
+                <img src="Regles/imagenes/interurbanas.png"
+                     style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">
+            </div>
+
+            <!-- URBANA -->
+            <div class="option-card" data-type="urbana"
+                style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px;
+                padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
+
+                <h4>Urbana</h4>
+                <img src="Regles/imagenes/urbanas.png"
+                     style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">
+            </div>
+
+            <!-- TRAVESIA -->
+            <div class="option-card" data-type="travesia"
+                style="flex: 1 1 220px; border: 1px solid #ccc; border-radius: 8px;
+                padding: 10px; background: rgba(255,255,255,0.12); cursor: pointer;">
+
+                <h4>Travesia</h4>
+                <img src="Regles/imagenes/travesia.png"
+                     style="width: 100%; height: 180px; object-fit: contain; display: block; margin: 0 auto;">
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+        <div style="margin-top: 15px; display: flex; gap: 10px; justify-content: flex-end;">
+            <button id="accept-button"
+                style="padding: 8px 16px; border-radius: 5px; border: none;
+                background: green; color: white; cursor: pointer;">
+                Aceptar
+            </button>
+
+            <button id="deny-button"
+                style="padding: 8px 16px; border-radius: 5px; border: none;
+                background: red; color: white; cursor: pointer;">
+                Denegar
+            </button>
+        </div>
+
+    </section>
+
+</main>
+
+<script src="ajava.js"></script>
 </body>
 </html>
