@@ -2,31 +2,112 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Gama - Juego</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Juego educativo sobre conducción responsable en carreteras de turismo">
+  <title>Conducción Responsable - Modo Turismo Interurbana</title>
   <link rel="stylesheet" href="turismointerurbana.css">
 </head>
 <body>
+  <main class="game-container" role="main" aria-label="Juego de Conducción Responsable - Modo Turismo Interurbana">
+    <!-- ENCABEZADO -->
+    <header class="game-header">
+      <h1 class="game-title">🚗 Conducción Responsable</h1>
+      <p class="game-subtitle">Carreteras de Turismo</p>
+      <p class="game-description">Conduce de forma segura en rutas turísticas</p>
+    </header>
 
-  <h2>🚗 Conducción Responsable — Gama</h2>
+    <!-- CUERPO DEL JUEGO -->
+    <section class="game-body">
+      <!-- HUD (Heads-Up Display) -->
+      <section id="hud" class="game-hud" role="region" aria-label="Estado del jugador">
+        <div class="hud-item" aria-live="polite" aria-label="Nivel de intoxicación">
+          <span class="hud-label">🍺 Intoxicación</span>
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="alcohol" class="fill" aria-hidden="true"></div>
+          </div>
+          <span class="hud-value" id="alcohol-value">0%</span>
+        </div>
+        <div class="hud-item" aria-live="polite" aria-label="Nivel de distracción">
+          <span class="hud-label">📱 Distracción</span>
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="distract" class="fill" aria-hidden="true"></div>
+          </div>
+          <span class="hud-value" id="distract-value">0%</span>
+        </div>
+      </section>
 
-  <div id="hud">
-    <div>
-      🍺 Intoxicación
-      <div class="bar"><div id="alcohol" class="fill"></div></div>
-    </div>
-    <div>
-      📱 Distracción
-      <div class="bar"><div id="distract" class="fill"></div></div>
-    </div>
-  </div>
+      <!-- Información del juego -->
+      <section class="game-info">
+        <div class="game-stats">
+          <p class="speed-display">
+            <span class="stat-label">Velocidad:</span>
+            <span id="speed" class="stat-value">60</span> km/h
+          </p>
+          <p class="distance-display">
+            <span class="stat-label">Distancia:</span>
+            <span id="distance" class="stat-value">0</span> km
+          </p>
+        </div>
+        
+        <details class="controls-info">
+          <summary class="summary-btn">📋 Controles</summary>
+          <div class="controls-content">
+            <table class="controls-table">
+              <tbody>
+                <tr>
+                  <td><kbd>W A S D</kbd></td>
+                  <td>Mover auto</td>
+                </tr>
+                <tr>
+                  <td><kbd>↑ ↓</kbd></td>
+                  <td>Ajustar velocidad</td>
+                </tr>
+                <tr>
+                  <td><kbd>R</kbd></td>
+                  <td>Resistir evento</td>
+                </tr>
+                <tr>
+                  <td><kbd>Q</kbd></td>
+                  <td>Aceptar decisión</td>
+                </tr>
+                <tr>
+                  <td><kbd>P</kbd></td>
+                  <td>Pausar/Reanudar</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </section>
 
-  <p id="controls">Controles: W A S D para mover — Flechas ↑ ↓ para subir/bajar la velocidad (también aumenta la velocidad del coche) — R para resistir eventos — Q para aceptar</p>
-  <p>Velocidad (obstáculos / flujo / coche): <span id="speed">60</span> km/h</p>
-  <p id="event"></p>
-  <p id="eventPrompt"></p>
+      <!-- Eventos del juego -->
+      <section class="game-events" role="region" aria-label="Eventos del juego" aria-live="assertive">
+        <div id="event" class="event-message"></div>
+        <div id="eventPrompt" class="event-prompt"></div>
+      </section>
 
-  <canvas id="game" width="360" height="700"></canvas>
+      <!-- Canvas del juego -->
+      <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Área de juego con visualización de carretera turística"></canvas>
+
+      <!-- Controles del juego -->
+      <div class="game-controls">
+        <button id="pauseBtn" class="btn btn-secondary" aria-pressed="false" title="Pausar o reanudar el juego (P)">
+          <span class="btn-icon">⏸️</span> Pausar
+        </button>
+        <button id="restartBtn" class="btn btn-secondary" title="Reiniciar el juego">
+          <span class="btn-icon">🔄</span> Reiniciar
+        </button>
+        <button id="homeBtn" class="btn btn-secondary" title="Volver al menú principal">
+          <span class="btn-icon">🏠</span> Inicio
+        </button>
+      </div>
+    </section>
+
+    <!-- Pie de página -->
+    <footer class="game-footer">
+      <p class="footer-text">Conducción responsable = Vida responsable</p>
+    </footer>
+  </main>
 
   <script src="turismointerurbana.js"></script>
 </body>
