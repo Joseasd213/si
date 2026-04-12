@@ -3,6 +3,7 @@ const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const laneCount = 4;
 const laneWidth = canvas.width / laneCount;
+const tipoCarretera = 'travesia';
 
 // Leer vehículo desde localStorage
 const selectedVehicle = localStorage.getItem('selectedVehicle') || 'Turismo';
@@ -21,14 +22,22 @@ let invert = false;
 let gameOver = false;
 let gameStartTime = Date.now();
 
-// Coche - Centrado en la pantalla
+// Coche - Aparece a la derecha o izquierda
 const car = {
-  x: canvas.width / 2 - 15,
+  x: (Math.random() < 0.5 ? 0 : 3) * laneWidth + (laneWidth - 30) / 2,
   y: canvas.height - 120,
   w: 30,
   h: 50,
   speedX: 0,
   speedY: 0
+};
+
+// Muro en medio de los cuatro carriles
+const wall = {
+  x: laneWidth * 2 - 5,
+  y: 0,
+  w: 10,
+  h: canvas.height
 };
 
 // Parámetros de la velocidad del jugador
@@ -67,10 +76,16 @@ function drawRoad() {
   ctx.fillStyle = "#333";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Dibujar carriles
-  ctx.strokeStyle = "#666";
-  ctx.lineWidth = 2;
-  ctx.setLineDash([10, 10]);
+  // Dibujar carriles con reglas de tránsito
+  if (tipoCarretera === 'urbana') {
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 4;
+    ctx.setLineDash([]);
+  } else {
+    ctx.strokeStyle = "#666";
+    ctx.lineWidth = 2;
+    ctx.setLineDash([10, 10]);
+  }
 
   for (let i = 1; i < laneCount; i++) {
     const x = i * laneWidth;
@@ -81,6 +96,21 @@ function drawRoad() {
   }
 
   ctx.setLineDash([]);
+
+  // Dibujar muro
+  ctx.fillStyle = "#888";
+  ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
+
+  // Reglas de tránsito
+  let regla = "";
+  if (tipoCarretera === 'urbana') regla = "Zona urbana: Líneas sólidas, no cambiar de carril";
+  else if (tipoCarretera === 'interurbana') regla = "Carretera interurbana: Adelantar con precaución";
+  else if (tipoCarretera === 'travesia') regla = "Travesía: Atención a peatones";
+  else regla = "Turismo interurbana: Respeta señales";
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "16px Arial";
+  ctx.fillText(regla, 10, 30);
 }
 
 function drawCar() {
@@ -184,6 +214,7 @@ function drawObstacles() {
 }
 
 function collision() {
+  // Colisión con obstáculos
   for (let o of obstacles) {
     if (
       car.x < o.x + o.w &&
@@ -194,6 +225,16 @@ function collision() {
       gameOver = true;
       break;
     }
+  }
+
+  // Colisión con muro
+  if (
+    car.x < wall.x + wall.w &&
+    car.x + car.w > wall.x &&
+    car.y < wall.y + wall.h &&
+    car.y + car.h > wall.y
+  ) {
+    gameOver = true;
   }
 }
 
