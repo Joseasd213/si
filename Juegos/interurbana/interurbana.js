@@ -17,6 +17,25 @@ if ((selectedVehicle === 'Ciclos' || selectedVehicle === 'Motocicleta') && tipoC
 }
 
 const vehicleTypes = ['Turismo', 'Autobus', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
+const vehicleImageMap = {
+  turismo: '../../png-autos/turismo.png',
+  autobus: '../../images/coche.png',
+  vmp: '../../png-autos/patinete electrico.png',
+  motocicleta: '../../png-autos/moto_avatar_si.png',
+  ciclos: '../../png-autos/ciclo.png',
+  camiones: '../../png-autos/camion.png'
+};
+const vehicleImages = {};
+Object.entries(vehicleImageMap).forEach(([type, src]) => {
+  const img = new Image();
+  img.src = src;
+  vehicleImages[type] = img;
+});
+
+function getVehicleImage(type) {
+  return vehicleImages[type.toLowerCase()] || null;
+}
+
 const speedLimits = {
   urbana: 50,
   interurbana: 90,
@@ -259,46 +278,49 @@ function drawRoad() {
 
 function drawCar() {
   const vehicleType = selectedVehicle.toLowerCase();
-  let color, text;
-  switch(vehicleType) {
-    case 'turismo':
-      color = "lightblue";
-      text = "Turismo";
-      break;
-    case 'autobus':
-      color = "lightyellow";
-      text = "Autobús";
-      break;
-    case 'vmp':
-      color = "lightgoldenrodyellow";
-      text = "VMP";
-      break;
-    case 'motocicleta':
-      color = "lightcoral";
-      text = "Motocicleta";
-      break;
-    case 'ciclos':
-      color = "lightgreen";
-      text = "Ciclos";
-      break;
-    case 'camiones':
-      color = "#D2B48C";
-      text = "Camiones";
-      break;
-    default:
-      color = "lightblue";
-      text = "Turismo";
+  const img = getVehicleImage(vehicleType);
+  if (img && img.complete && img.naturalWidth > 0) {
+    ctx.drawImage(img, car.x, car.y, car.w, car.h);
+  } else {
+    let color = "lightblue";
+    let text = "Turismo";
+    switch(vehicleType) {
+      case 'turismo':
+        color = "lightblue";
+        text = "Turismo";
+        break;
+      case 'autobus':
+        color = "lightyellow";
+        text = "Autobús";
+        break;
+      case 'vmp':
+        color = "lightgoldenrodyellow";
+        text = "VMP";
+        break;
+      case 'motocicleta':
+        color = "lightcoral";
+        text = "Motocicleta";
+        break;
+      case 'ciclos':
+        color = "lightgreen";
+        text = "Ciclos";
+        break;
+      case 'camiones':
+        color = "#D2B48C";
+        text = "Camiones";
+        break;
+    }
+    ctx.fillStyle = color;
+    ctx.fillRect(car.x, car.y, car.w, car.h);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(car.x, car.y, car.w, car.h);
+    ctx.fillStyle = "black";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(text, car.x + car.w/2, car.y + car.h/2);
   }
-  ctx.fillStyle = color;
-  ctx.fillRect(car.x, car.y, car.w, car.h);
-  ctx.strokeStyle = "black";
-  ctx.lineWidth = 1;
-  ctx.strokeRect(car.x, car.y, car.w, car.h);
-  ctx.fillStyle = "black";
-  ctx.font = "10px Arial";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(text, car.x + car.w/2, car.y + car.h/2);
 }
 
 function spawnObstacle() {
@@ -318,9 +340,15 @@ function spawnObstacle() {
   // Velocitat individual de l'obstacle
   const speedVariation = Math.random() * 2 + 0.5; // entre 0.5 i 2.5
 
+  // Determinar posición inicial según el lado
+  const isLeftSide = lane < 2;
+  const y = isLeftSide 
+    ? canvas.height + oh + Math.random() * 200  // Desde abajo para lado izquierdo
+    : -oh - Math.random() * 200;  // Desde arriba para lado derecho
+
   obstacles.push({
     x: x,
-    y: -oh - Math.random() * 200,
+    y: y,
     w: ow,
     h: oh,
     lane: lane,
@@ -348,39 +376,44 @@ function updateObstacles() {
 
 function drawObstacles() {
   obstacles.forEach(o => {
-    let color;
-    switch(o.type.toLowerCase()) {
-      case 'turismo':
-        color = "lightblue";
-        break;
-      case 'autobus':
-        color = "lightyellow";
-        break;
-      case 'vmp':
-        color = "lightgoldenrodyellow";
-        break;
-      case 'motocicleta':
-        color = "lightcoral";
-        break;
-      case 'ciclos':
-        color = "lightgreen";
-        break;
-      case 'camiones':
-        color = "#D2B48C";
-        break;
-      default:
-        color = "lightgray";
+    const img = getVehicleImage(o.type);
+    if (img && img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, o.x, o.y, o.w, o.h);
+    } else {
+      let color;
+      switch(o.type.toLowerCase()) {
+        case 'turismo':
+          color = "lightblue";
+          break;
+        case 'autobus':
+          color = "lightyellow";
+          break;
+        case 'vmp':
+          color = "lightgoldenrodyellow";
+          break;
+        case 'motocicleta':
+          color = "lightcoral";
+          break;
+        case 'ciclos':
+          color = "lightgreen";
+          break;
+        case 'camiones':
+          color = "#D2B48C";
+          break;
+        default:
+          color = "lightgray";
+      }
+      ctx.fillStyle = color;
+      ctx.fillRect(o.x, o.y, o.w, o.h);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 1;
+      ctx.strokeRect(o.x, o.y, o.w, o.h);
+      ctx.fillStyle = "black";
+      ctx.font = "10px Arial";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(getVehicleLabel(o.type), o.x + o.w/2, o.y + o.h/2);
     }
-    ctx.fillStyle = color;
-    ctx.fillRect(o.x, o.y, o.w, o.h);
-    ctx.strokeStyle = "black";
-    ctx.lineWidth = 1;
-    ctx.strokeRect(o.x, o.y, o.w, o.h);
-    ctx.fillStyle = "black";
-    ctx.font = "10px Arial";
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(getVehicleLabel(o.type), o.x + o.w/2, o.y + o.h/2);
   });
 }
 
@@ -402,8 +435,8 @@ function checkRuleViolations() {
   if (now - lastSpeedCheckTime > 1000) {
     const speedLimit = speedLimits[tipoCarretera] || 90;
     if (speed > speedLimit) {
-      penalties += 1; // Sanción por exceder velocidad
-      console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
+      penalties += Math.max(0, (speed - speedLimit) / 10); // Sanción acumulativa por exceder velocidad
+      console.log(`🚨 Sanción acumulada: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h), +${Math.max(0, (speed - speedLimit) / 10).toFixed(1)}`);
     }
     lastSpeedCheckTime = now;
   }
