@@ -8,11 +8,6 @@ const purpose = document.querySelector("#purpose");
 const how = document.querySelector("#how");
 const who = document.querySelector("#who");
 const botonJugar = document.querySelector("#jugar button");
-const play = document.querySelector("#play");
-const advice = document.querySelector("#advice");
-const reglas = document.querySelector("#rules");
-const salir = document.querySelector("#salir");
-const manual = document.querySelector("#manual")
 
 let paginaActual = 1; // 1 = purpose, 2 = how, 3 = who
 
@@ -20,10 +15,6 @@ function mostrarPagina() {
     purpose.classList.add("hidden");
     how.classList.add("hidden");
     who.classList.add("hidden");
-    play.classList.add("hidden");
-    advice.classList.add("hidden");
-    reglas.classList.add("hidden");
-    salir.classList.add("hidden");
 
     if (paginaActual === 1) {
         purpose.classList.remove("hidden");
@@ -31,18 +22,6 @@ function mostrarPagina() {
         how.classList.remove("hidden");
     } else if (paginaActual === 3) {
         who.classList.remove("hidden");
-    } else if (paginaActual === 4) {
-        play.classList.remove("hidden");
-        manual.classList.remove("hidden")
-    } else if (paginaActual === 5) {
-        advice.classList.remove("hidden");
-        manual.classList.remove("hidden")
-    } else if (paginaActual === 6) {
-        reglas.classList.remove("hidden");
-        manual.classList.remove("hidden")
-    } else if (paginaActual === 7) {
-        salir.classList.remove("hidden");
-        manual.classList.remove("hidden")
     }
 }
 
@@ -88,11 +67,10 @@ function anteriores() {
 anterior.addEventListener("click", anteriores);
 
 function siguientes() {
-    if (paginaActual < 8) {
+    if (paginaActual < 3) {
         paginaActual++;
         mostrarPagina();
-    } else if (paginaActual === 8) {
-        // Redirigir a menu.html
+    } else {
         window.location.href = "menu.html";
     }
 }
@@ -104,11 +82,6 @@ function actualizarVista(){
     purpose.classList.add("hidden");
     how.classList.add("hidden");
     who.classList.add("hidden");
-    play.classList.add("hidden");
-    advice.classList.add("hidden");
-    reglas.classList.add("hidden");
-    salir.classList.add("hidden");
-    manual.classList.remove("hidden");
 
     if (paginaActual === 1) {
         purpose.classList.remove("hidden");
@@ -118,18 +91,6 @@ function actualizarVista(){
     }
     if (paginaActual === 3) {
         who.classList.remove("hidden");
-    }
-    if (paginaActual === 4) {
-        play.classList.remove("hidden");
-    }
-    if (paginaActual === 5) {
-        advice.classList.remove("hidden");
-    }
-    if (paginaActual === 6) {
-        reglas.classList.remove("hidden");
-    }
-    if (paginaActual === 7) {
-        salir.classList.remove("hidden");
     }
 }
 
