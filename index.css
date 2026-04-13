@@ -53,12 +53,11 @@ a {
 
 /* ============ HEADER ============ */
 .header {
-    background: linear-gradient(135deg, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0.9));
+    background: white;
     backdrop-filter: blur(10px);
     padding: var(--spacing-lg) 0;
     box-shadow: var(--shadow);
     position: sticky;
-    top: 0;
     z-index: 100;
 }
 
@@ -138,7 +137,7 @@ a {
 }
 
 .hero-card {
-    background: linear-gradient(135deg, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0.85));
+    background: white;
     padding: var(--spacing-xl);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -188,7 +187,7 @@ a {
 
 /* ============ TEAM SECTION ============ */
 .team-section {
-    background: linear-gradient(135deg, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0.85));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 240, 240, 0.85));
     padding: var(--spacing-xl);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
@@ -280,7 +279,7 @@ a {
 }
 
 .content{
-    background: linear-gradient(135deg, rgba(240, 240, 240, 0.95), rgba(240, 240, 240, 0.9));
+    background: white;
     border-radius: 20px;
     margin: 20px;
     padding: 20px;
@@ -295,4 +294,39 @@ a {
     font-size: 28px;
     font-weight: 700;
     color: var(--accent-color);
+}
+
+.footer-info {
+    background: white;
+    margin-top: 40px;
+    box-shadow: var(--shadow);
+    padding: var(--spacing-lg) 0;
+}
+
+.team,
+.organizers {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 200px;
+}
+
+.organizer-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.organizer-logos img {
+    height: 30px;
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.organizer-logos img:hover {
+    transform: scale(1.1);
 }
