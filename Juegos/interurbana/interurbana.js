@@ -209,7 +209,9 @@ function renderPageHeader() {
 function navigateOnCrash() {
   if (redirectScheduled) return;
   redirectScheduled = true;
-  const target = gameOverReason === 'alcohol' ? '../../alchol.html' : '../../choque.html';
+  let target = '../../choque.html';
+  if (gameOverReason === 'alcohol') target = '../../alchol.html';
+  else if (gameOverReason === 'infraccion') target = '../../infraccion.html';
   setTimeout(() => { window.location.href = target; }, 1400);
 }
 
@@ -303,8 +305,12 @@ function spawnObstacle() {
   const ow = 30;
   const oh = 50;
 
-  // Elegir carril (0 a 3)
-  const lane = Math.floor(Math.random() * laneCount);
+  // Elegir carril (0 a 3), con chance de aparecer en el carril del jugador
+  let lane = Math.floor(Math.random() * laneCount);
+  const playerLane = Math.floor(car.x / laneWidth);
+  if (Math.random() < 0.2) { // 20% de chance
+    lane = playerLane;
+  }
 
   // Centrar obstacle en el carril
   const x = lane * laneWidth + (laneWidth - ow) / 2;
@@ -554,6 +560,7 @@ function loop() {
     ctx.font = "24px Arial";
     let message = "";
     if (gameOverReason === 'alcohol') message = "🚫 CONDUCCIÓ EBRIA";
+    else if (gameOverReason === 'infraccion') message = "🚫 DEMASIADAS INFRACCIONES";
     else if (gameOverReason === 'goal') message = "🎉 OBJECTIU ASSOLIT";
     else message = "💥 ACCIDENT 💥";
     ctx.fillText(message, canvas.width / 2 - 108, canvas.height / 2 - 10);
@@ -630,7 +637,6 @@ function loop() {
 
   const elapsedSeconds = (Date.now() - gameStartTime) / 1000;
   const difficultyMultiplier = 1 + (elapsedSeconds / 60);
-  spawnRate = Math.min(0.003, baseSpawnRate * difficultyMultiplier);
   eventRate = Math.min(0.001, baseEventRate * difficultyMultiplier);
 
   applyDebuffs();
@@ -645,9 +651,17 @@ function loop() {
   const remainingMeters = Math.max(0, Math.round((distanceGoalKm - distanceKm) * 1000));
   document.getElementById('distance-left').textContent = remainingMeters;
 
+  // Aumentar spawnRate cuanto menos distancia al final
+  const progress = 1 - remainingMeters / (distanceGoalKm * 1000);
+  spawnRate = baseSpawnRate + progress * (0.02 - baseSpawnRate);
+
   if (distanceKm >= distanceGoalKm && !gameOver) {
     gameOver = true;
-    setGameOverReason('goal');
+    if (penalties > 0) {
+      setGameOverReason('infraccion');
+    } else {
+      setGameOverReason('goal');
+    }
   }
 
   requestAnimationFrame(loop);
