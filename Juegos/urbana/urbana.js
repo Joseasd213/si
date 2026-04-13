@@ -8,22 +8,26 @@ const tipoCarretera = 'urbana';
 // Llegir vehicle de localStorage
 const selectedVehicle = localStorage.getItem('selectedVehicle') || 'Turismo';
 
-const vehicleTypes = ['Turismo', 'Autobus', 'Motocicleta', 'Ciclos', 'Camiones'];
+const vehicleTypes = ['Turismo', 'Autobus', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
 
 // Velocitat ambiental (controlada per fletxes amunt/avall)
 let minSpeed = 10;
 let maxSpeed = 180;
 let acceleration = 1;
-let speed = 60;
+let speed = 40; // Velocidad inicial bajo el límite de urbana (50 km/h)
 
 // Debuffs i estat
 let intox = 0;
 let distract = 0;
 let penalties = 0;
+const maxPenalties = 5; // Máximo de sanciones permitidas
 let reactionDelay = 0;
 let invert = false;
 let gameOver = false;
 let gameStartTime = Date.now();
+let lastFrameTime = Date.now();
+let distanceKm = 0;
+const distanceGoalKm = 2;
 
 // Seguiment dels canvis de carril per detectar infraccions
 let lastCarLane = -1;
@@ -154,6 +158,40 @@ function renderRules() {
   if (vehicleContainer) vehicleContainer.innerHTML = vehicleRules.map(rule => `<div class="rule-entry">${rule}</div>`).join('');
 }
 
+function formatRoadName(road) {
+  switch (road) {
+    case 'urbana': return 'Urbana';
+    case 'interurbana': return 'Interurbana';
+    case 'travesia': return 'Travessia';
+    case 'turismo-interurbana': return 'Turisme Interurbana';
+    default: return 'Carretera';
+  }
+}
+
+function getVehicleLabel(vehicle) {
+  switch (vehicle.toLowerCase()) {
+    case 'turismo': return 'Turismo';
+    case 'autobus': return 'Autobús';
+    case 'vmp': return 'VMP';
+    case 'motocicleta': return 'Motocicleta';
+    case 'ciclos': return 'Cicles';
+    case 'camiones': return 'Camió';
+    default: return vehicle;
+  }
+}
+
+function renderPageHeader() {
+  const title = document.querySelector('.game-title');
+  const subtitle = document.querySelector('.game-subtitle');
+  const description = document.querySelector('.game-description');
+  const pageTitle = `${getVehicleLabel(selectedVehicle)} - ${formatRoadName(tipoCarretera)}`;
+
+  if (title) title.textContent = 'PIXEL DRIVER: CIUTAT SEGURA';
+  if (subtitle) subtitle.textContent = pageTitle;
+  if (description) description.textContent = `Condueix amb ${getVehicleLabel(selectedVehicle)} en una via ${formatRoadName(tipoCarretera)}.`;
+  document.title = `PIXEL DRIVER | ${pageTitle}`;
+}
+
 function navigateOnCrash() {
   if (redirectScheduled) return;
   redirectScheduled = true;
@@ -212,9 +250,12 @@ function drawCar() {
       text = "Turismo";
       break;
     case 'autobus':
-    case 'vmp':
       color = "lightyellow";
-      text = "Autobus";
+      text = "Autobús";
+      break;
+    case 'vmp':
+      color = "lightgoldenrodyellow";
+      text = "VMP";
       break;
     case 'motocicleta':
       color = "lightcoral";
@@ -270,11 +311,19 @@ function spawnObstacle() {
 
 function updateObstacles() {
   obstacles.forEach(o => {
-    // cada cotxe té la seva pròpia velocitat + influència global
-    o.y += (speed / 30 + 1) * o.speed;
+    // Determinar qué lado del muro está el obstáculo
+    const isLeftSide = o.lane < 2; // Carriles 0-1 a la izquierda
+    
+    if (isLeftSide) {
+      // En el lado izquierdo, los vehículos avanzan hacia arriba (sentido contrario)
+      o.y -= (speed / 30 + 1) * o.speed;
+    } else {
+      // En el lado derecho, los vehículos avanzan hacia abajo (sentido normal)
+      o.y += (speed / 30 + 1) * o.speed;
+    }
   });
 
-  obstacles = obstacles.filter(o => o.y < canvas.height + 100);
+  obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
 }
 
 function drawObstacles() {
@@ -313,26 +362,25 @@ function drawObstacles() {
 }
 
 function checkRuleViolations() {
-  // Detectar canvi de carril brusć
   const currentLane = Math.floor(car.x / laneWidth);
-  
-  if (lastCarLane !== -1 && lastCarLane !== currentLane) {
+
+  if (tipoCarretera === 'urbana' && lastCarLane !== -1 && lastCarLane !== currentLane) {
     const now = Date.now();
     if (now - lastLaneChangeTime > 500) {
-      // Infracció: canvi de carril sense avís
-      penalties = Math.min(100, penalties + 15);
+      penalties += 1; // Sanción por cambiar carril
+      console.log(`🚨 Sanción #${penalties}: Cambio de carril brusco en zona urbana`);
       lastLaneChangeTime = now;
     }
   }
-  
+
   lastCarLane = currentLane;
-  
-  // Detectar excés de velocitat en zona urbana
+
   const now = Date.now();
   if (now - lastSpeedCheckTime > 1000) {
     const speedLimit = tipoCarretera === 'urbana' ? 50 : 90;
     if (speed > speedLimit) {
-      penalties = Math.min(100, penalties + 10);
+      penalties += 1; // Sanción por exceder velocidad
+      console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
     }
     lastSpeedCheckTime = now;
   }
@@ -369,8 +417,7 @@ function updateBars() {
   document.getElementById("alcohol-value").textContent = intox + "%";
   document.getElementById("distract").style.width = distract + "%";
   document.getElementById("distract-value").textContent = distract + "%";
-  document.getElementById("penalties").style.width = penalties + "%";
-  document.getElementById("penalties-value").textContent = penalties + "%";
+  document.getElementById("penalties-value").textContent = penalties; // Mostrar número de sanciones
 }
 
 function applyDebuffs() {
@@ -386,12 +433,8 @@ function applyDebuffs() {
     gameOver = true;
     setGameOverReason('choque');
   }
-
-  if (penalties >= 100 && gameOverReason !== 'alcohol') {
-    gameOver = true;
-    setGameOverReason('choque');
-  }
 }
+
 
 function randomEvent() {
   const e = events[Math.floor(Math.random() * events.length)];
@@ -439,6 +482,9 @@ let lastInputChangeTime = 0;
 
 document.addEventListener('keydown', (e) => {
   const key = e.key;
+  if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d", "W", "A", "S", "D"].includes(key)) {
+    e.preventDefault();
+  }
 
   if (currentEvent) {
     if (key.toLowerCase() === 'r') {
@@ -489,9 +535,16 @@ function loop() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "white";
     ctx.font = "24px Arial";
-    const message = gameOverReason === 'alcohol' ? "🚫 CONDUCCIÓ EBRIA" : "💥 ACCIDENT 💥";
+    let message = "";
+    if (gameOverReason === 'alcohol') message = "🚫 CONDUCCIÓ EBRIA";
+    else if (gameOverReason === 'goal') message = "🎉 OBJECTIU ASSOLIT";
+    else message = "💥 ACCIDENT 💥";
     ctx.fillText(message, canvas.width / 2 - 108, canvas.height / 2 - 10);
     ctx.font = "14px Arial";
+    if (gameOverReason === 'goal') {
+      ctx.fillText("Partida finalitzada", canvas.width / 2 - 70, canvas.height / 2 + 20);
+      return;
+    }
     ctx.fillText("Redirigint...", canvas.width / 2 - 56, canvas.height / 2 + 20);
     navigateOnCrash();
     return;
@@ -567,10 +620,21 @@ function loop() {
   updateBars();
 
   document.getElementById('speed').textContent = Math.round(speed);
+  const currentTime = Date.now();
+  const deltaSeconds = (currentTime - lastFrameTime) / 1000;
+  lastFrameTime = currentTime;
+  distanceKm += (speed / 3600) * deltaSeconds;
+  document.getElementById('distance').textContent = distanceKm.toFixed(2);
+
+  if (distanceKm >= distanceGoalKm && !gameOver) {
+    gameOver = true;
+    setGameOverReason('goal');
+  }
 
   requestAnimationFrame(loop);
 }
 
 renderRules();
+renderPageHeader();
 
 loop();

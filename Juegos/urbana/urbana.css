@@ -18,8 +18,8 @@ body {
   text-align: center;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
   padding: 20px;
 }
 
@@ -30,12 +30,13 @@ body {
   background-color: #0f3460;
   border-radius: 16px;
   padding: 32px;
-  max-width: 500px;
+  max-width: 1400px;
   width: 100%;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   transition: box-shadow 0.3s ease, transform 0.3s ease;
   display: flex;
   flex-direction: column;
+  margin: 20px auto;
 }
 
 .game-container:hover {
@@ -48,9 +49,18 @@ body {
    ============================================ */
 .game-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
   border-bottom: 2px solid rgba(66, 153, 225, 0.3);
   padding-bottom: 16px;
+}
+
+/* Control superior (velocidad y controles) */
+.top-controls {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(66, 153, 225, 0.1);
+  border: 1px solid rgba(66, 153, 225, 0.2);
+  border-radius: 8px;
 }
 
 .game-title {
@@ -82,13 +92,19 @@ body {
   margin-bottom: 16px;
   flex: 1;
   display: grid;
-  grid-template-columns: 1.8fr 1fr;
+  grid-template-columns: minmax(240px,1fr) 2fr minmax(240px,1fr);
   gap: 18px;
   align-items: flex-start;
 }
 
 .game-body .full-width {
   grid-column: 1 / -1;
+}
+
+.game-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .game-play {
@@ -103,6 +119,8 @@ body {
   border-radius: 14px;
   padding: 18px;
   min-width: 240px;
+  max-height: 600px;
+  overflow-y: auto;
 }
 
 .rule-panel h2,
@@ -185,18 +203,24 @@ body {
 }
 
 .hud-value {
-  font-size: 11px;
+  font-size: 20px;
   color: #a0aec0;
   font-weight: 600;
 }
 
-/* Información del juego */
+/* Sanciones como número (sin barra) */
+.hud-item:has(~ *) #penalties-value {
+  font-size: 20px;
+  color: #ff6b6b;
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* Información del juego (al lado izquierdo con HUD) */
 .game-info {
-  margin-bottom: 16px;
-  padding: 12px;
-  background: rgba(66, 153, 225, 0.1);
-  border-left: 4px solid #4299e1;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .game-stats {

@@ -11,15 +11,54 @@
   <main class="game-container" role="main" aria-label="Joc de Conducció Responsable - Mode Turisme Interurbana">
     <!-- ENCAPÇALAT -->
     <header class="game-header">
-      <h1 class="game-title">🚗 Conducció Responsable</h1>
+      <h1 class="game-title">PIXEL DRIVER: CIUTAT SEGURA</h1>
       <p class="game-subtitle">Carreteres de Turisme</p>
       <p class="game-description">Condueixes de forma segura en rutes turístiques</p>
     </header>
 
+    <!-- VELOCITAT I CONTROLES (sota header) -->
+    <section class="top-controls">
+      <div class="game-stats">
+        <p class="speed-display">
+          <span class="stat-label">Velocitat:</span>
+          <span id="speed" class="stat-value">60</span> km/h
+        </p>
+        <p class="distance-display">
+          <span class="stat-label">Distància:</span>
+          <span id="distance" class="stat-value">0</span> km
+        </p>
+      </div>
+      
+      <details class="controls-info">
+        <summary class="summary-btn">📋 Controles</summary>
+        <div class="controls-content">
+          <table class="controls-table">
+            <tbody>
+              <tr>
+                <td><kbd>W A S D</kbd></td>
+                <td>Mou auto</td>
+              </tr>
+              <tr>
+                <td><kbd>↑ ↓</kbd></td>
+                <td>Ajusta velocitat</td>
+              </tr>
+              <tr>
+                <td><kbd>R</kbd></td>
+                <td>Resistent evento</td>
+              </tr>
+              <tr>
+                <td><kbd>Q</kbd></td>
+                <td>Accepta decisió</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
     <!-- COS DEL JOC -->
     <section class="game-body">
-      <div class="game-play">
-        <!-- HUD (Heads-Up Display) -->
+      <aside class="game-info" role="region" aria-label="Indicadors del jugador">
         <section id="hud" class="game-hud" role="region" aria-label="Estat del jugador">
           <div class="hud-item" aria-live="polite" aria-label="Nivell d'intoxicació">
             <span class="hud-label">🍺 Intoxicació</span>
@@ -37,60 +76,17 @@
           </div>
           <div class="hud-item" aria-live="polite" aria-label="Sancions acumulades">
             <span class="hud-label">🚨 Sancions</span>
-            <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-              <div id="penalties" class="fill" aria-hidden="true"></div>
-            </div>
-            <span class="hud-value" id="penalties-value">0%</span>
+            <span class="hud-value" id="penalties-value">0</span>
           </div>
         </section>
+      </aside>
 
-        <!-- Informació del joc -->
-        <section class="game-info">
-          <div class="game-stats">
-            <p class="speed-display">
-              <span class="stat-label">Velocitat:</span>
-              <span id="speed" class="stat-value">60</span> km/h
-            </p>
-            <p class="distance-display">
-              <span class="stat-label">Distància:</span>
-              <span id="distance" class="stat-value">0</span> km
-            </p>
-          </div>
-          
-          <details class="controls-info">
-            <summary class="summary-btn">📋 Controls</summary>
-            <div class="controls-content">
-              <table class="controls-table">
-                <tbody>
-                  <tr>
-                    <td><kbd>W A S D</kbd></td>
-                    <td>Mou auto</td>
-                  </tr>
-                  <tr>
-                    <td><kbd>↑ ↓</kbd></td>
-                    <td>Ajusta velocitat</td>
-                  </tr>
-                  <tr>
-                    <td><kbd>R</kbd></td>
-                    <td>Resistent evento</td>
-                  </tr>
-                  <tr>
-                    <td><kbd>Q</kbd></td>
-                    <td>Accepta decisió</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </details>
-        </section>
-
-        <!-- Esdeveniments del joc -->
+      <div class="game-play">
         <section class="game-events" role="region" aria-label="Esdeveniments del joc" aria-live="assertive">
           <div id="event" class="event-message"></div>
           <div id="eventPrompt" class="event-prompt"></div>
         </section>
 
-        <!-- Canvas del joc -->
         <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Àrea de joc amb visualització de carretera turística"></canvas>
       </div>
 
