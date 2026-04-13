@@ -63,8 +63,8 @@ acceptButton.addEventListener('click', () => {
             alert('Els cicles només poden circular per carreteres urbanes o travessies.');
             return;
         }
-        if (selectedVehicle === 'Motocicleta' && selectedOption === 'interurbana') {
-            alert('Les motocicletes no poden circular per interurbana.');
+        if (selectedVehicle === 'Motocicleta' && selectedOption.includes('interurbana')) {
+            alert('Les motocicletes no poden circular per carreteres interurbanes.');
             return;
         }
         // Guardar elecciones en localStorage

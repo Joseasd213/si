@@ -9,6 +9,12 @@ const tipoCarretera = 'urbana';
 const selectedVehicle = localStorage.getItem('selectedVehicle') || 'Turismo';
 
 const vehicleTypes = ['Turismo', 'Autobus', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
+const speedLimits = {
+  urbana: 50,
+  interurbana: 90,
+  travesia: 60,
+  'turismo-interurbana': 90
+};
 
 // Velocitat ambiental (controlada per fletxes amunt/avall)
 let minSpeed = 10;
@@ -377,7 +383,7 @@ function checkRuleViolations() {
 
   const now = Date.now();
   if (now - lastSpeedCheckTime > 1000) {
-    const speedLimit = tipoCarretera === 'urbana' ? 50 : 90;
+    const speedLimit = speedLimits[tipoCarretera] || 90;
     if (speed > speedLimit) {
       penalties += 1; // Sanción por exceder velocidad
       console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
@@ -625,6 +631,8 @@ function loop() {
   lastFrameTime = currentTime;
   distanceKm += (speed / 3600) * deltaSeconds;
   document.getElementById('distance').textContent = distanceKm.toFixed(2);
+  const remainingMeters = Math.max(0, Math.round((distanceGoalKm - distanceKm) * 1000));
+  document.getElementById('distance-left').textContent = remainingMeters;
 
   if (distanceKm >= distanceGoalKm && !gameOver) {
     gameOver = true;
