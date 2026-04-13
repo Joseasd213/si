@@ -58,6 +58,7 @@ const distanceGoalKm = 2;
 let lastCarLane = -1;
 let lastSpeedCheckTime = 0;
 let lastLaneChangeTime = 0;
+let wasOverSpeed = false;
 
 // Cotxe - Apareix a la dreta o esquerra
 const car = {
@@ -423,14 +424,13 @@ function checkRuleViolations() {
 
   lastCarLane = currentLane;
 
-  const now = Date.now();
-  if (now - lastSpeedCheckTime > 1000) {
-    const speedLimit = speedLimits[tipoCarretera] || 90;
-    if (speed > speedLimit) {
-      penalties += Math.max(0, (speed - speedLimit) / 10); // Sanción acumulativa por exceder velocidad
-      console.log(`🚨 Sanción acumulada: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h), +${Math.max(0, (speed - speedLimit) / 10).toFixed(1)}`);
-    }
-    lastSpeedCheckTime = now;
+  const speedLimit = speedLimits[tipoCarretera] || 90;
+  if (speed > speedLimit && !wasOverSpeed) {
+    penalties += 1; // Sanción por exceder velocidad
+    console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
+    wasOverSpeed = true;
+  } else if (speed <= speedLimit) {
+    wasOverSpeed = false;
   }
 }
 
