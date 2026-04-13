@@ -1,28 +1,36 @@
-// Canvas y contexto
+// Canvas i context
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const laneCount = 4;
 const laneWidth = canvas.width / laneCount;
 const tipoCarretera = 'turismo-interurbana';
 
-// Leer vehículo desde localStorage
+// Llegir vehicle de localStorage
 const selectedVehicle = localStorage.getItem('selectedVehicle') || 'Turismo';
 
-// Velocidad ambiental (controlada por flechas arriba/abajo)
+const vehicleTypes = ['Turismo', 'Autobus', 'Motocicleta', 'Ciclos', 'Camiones'];
+
+// Velocitat ambiental (controlada per fletxes amunt/avall)
 let minSpeed = 10;
 let maxSpeed = 180;
 let acceleration = 1;
 let speed = 60;
 
-// Debuffs y estado
+// Debuffs i estat
 let intox = 0;
 let distract = 0;
+let penalties = 0;
 let reactionDelay = 0;
 let invert = false;
 let gameOver = false;
 let gameStartTime = Date.now();
 
-// Coche - Aparece a la derecha o izquierda
+// Seguiment dels canvis de carril per detectar infraccions
+let lastCarLane = -1;
+let lastSpeedCheckTime = 0;
+let lastLaneChangeTime = 0;
+
+// Cotxe - Apareix a la dreta o esquerra
 const car = {
   x: (Math.random() < 0.5 ? 0 : 3) * laneWidth + (laneWidth - 30) / 2,
   y: canvas.height - 120,
@@ -32,7 +40,7 @@ const car = {
   speedY: 0
 };
 
-// Muro en medio de los cuatro carriles
+// Mur al mig dels quatre carrils
 const wall = {
   x: laneWidth * 2 - 5,
   y: 0,
@@ -40,11 +48,11 @@ const wall = {
   h: canvas.height
 };
 
-// Parámetros de la velocidad del jugador
+// Paràmetres de la velocitat del jugador
 const playerBaseSpeed = 3.5;
 const playerSpeedCap = 9;
 
-// Obstáculos
+// Obstacles
 let obstacles = [];
 let maxObstacles = 6;
 let baseSpawnRate = 0.006;
@@ -52,7 +60,7 @@ let spawnRate = baseSpawnRate;
 let spawnInterval = 50;
 let spawnCooldown = 0;
 
-// Eventos R/Q
+// Esdeveniments R/Q
 let baseEventRate = 0.0006;
 let eventRate = baseEventRate;
 let currentEvent = null;
@@ -61,22 +69,104 @@ let eventStartTime = 0;
 let resistCount = 0;
 
 const events = [
-  { text: "La cerveza fría te tienta 🍺", a: 20, d: 0 },
-  { text: "Tus amigos hacen un brindis", a: 20, d: 0 },
-  { text: "Te sientes invencible", a: 60, d: 0 },
-  { text: "Te llama tu ex 📞", a: 0, d: 50 },
-  { text: "Quieres cambiar la música 🎵", a: 0, d: 40 },
-  { text: "Crees haber visto a Messi ⚽", a: 0, d: 80 },
-  { text: "Notificación del móvil 📱", a: 0, d: 20 },
-  { text: "Te ofrecen un tabaco 🚬", a: 20, d: 40 }
+  { text: "La cervesa freda et tempta 🍺", a: 20, d: 0 },
+  { text: "Els teus amics fan un somni", a: 20, d: 0 },
+  { text: "Et sents invencible", a: 60, d: 0 },
+  { text: "Et crida la teva ex 📞", a: 0, d: 50 },
+  { text: "Vols canviar la música 🎵", a: 0, d: 40 },
+  { text: "Creus haver vist a Messi ⚽", a: 0, d: 80 },
+  { text: "Notificació del mòbil 📱", a: 0, d: 20 },
+  { text: "T'ofereixen un tabac 🚬", a: 20, d: 40 }
 ];
 
-// --- Dibujo ---
+const roadRuleSets = {
+  urbana: [
+    "Respectar límits de velocitat i senyals en zona urbana.",
+    "Mantenir distància amb vianants, ciclistes i transport públic.",
+    "No canviar de carril de forma brusc; usar intermitents.",
+    "Assegurar pas en semàfors i passos de vianants."
+  ],
+  interurbana: [
+    "Manté la distància de seguretat en la carretera.",
+    "Avança només quan sigui segur i senyalitza amb temps.",
+    "Redueix velocitat en corbes i zones amb menor visibilitat.",
+    "No uses el carril d'emergència a menys que sigui imprescindible."
+  ],
+  'turismo-interurbana': [
+    "Viatges de turisme: descansa cada hora i no et apressuris.",
+    "Planifica la ruta i revisa l'estat de la carretera abans de sortir.",
+    "Condueixes sobri i evita distraccions en vies turístiques.",
+    "Adapta la velocitat a l'entorn i a les condicions climàtiques."
+  ]
+};
+
+const vehicleRuleSets = {
+  Turismo: [
+    "Turisme: controla la velocitat i usa cinturó en tot moment.",
+    "Evita maniobres bruscas en zones urbanes i carretera turística.",
+    "Manté l'atenció en l'entorn i en la senyalització."
+  ],
+  Autobus: [
+    "Autobús: més distància de seguretat i cura amb passatgers.",
+    "Respecta les parades autoritzades i evita frenades bruscas.",
+    "Si és necessari, redueix velocitat abans de fer una parada."
+  ],
+  VMP: [
+    "VMP: velocitat limitada, usa casc i permaneix visible.",
+    "Respecta els carrils ciclistes i la jerarquia de passos de vianants.",
+    "No invadeixis trajectòries de vehicles més grans."
+  ],
+  Motocicleta: [
+    "Motocicleta: protegeix el teu cap i usa roba visible.",
+    "Augmenta la distància de frenada en condicions adverses.",
+    "Evita punts cecs i no et desplacis entre vehicles."
+  ],
+  Ciclos: [
+    "Cicles: usa carril bici sempre que estigui disponible.",
+    "Respecta semàfors i no circules per voreres de vianants.",
+    "Manté't estable i senyalitza els girs amb antelació."
+  ],
+  Camiones: [
+    "Camió: funciona amb més inèrcia, frena amb anticipació.",
+    "Coneix els teus punts cecs i senyalitza amb temps.",
+    "Controla el pes i no excedeixis la velocitat permesa."
+  ],
+  default: [
+    "Condueixes amb atenció, adapta la teva velocitat i respecta les regles."
+  ]
+};
+
+let gameOverReason = null;
+let redirectScheduled = false;
+
+function setGameOverReason(reason) {
+  if (gameOverReason === 'alcohol') return;
+  gameOverReason = reason;
+}
+
+function renderRules() {
+  const roadContainer = document.getElementById('roadRules');
+  const vehicleContainer = document.getElementById('vehicleRules');
+  const rules = roadRuleSets[tipoCarretera] || roadRuleSets.interurbana;
+  const vehicleRules = vehicleRuleSets[selectedVehicle] || vehicleRuleSets.default;
+
+  if (roadContainer) roadContainer.innerHTML = rules.map(rule => `<div class="rule-entry">${rule}</div>`).join('');
+  if (vehicleContainer) vehicleContainer.innerHTML = vehicleRules.map(rule => `<div class="rule-entry">${rule}</div>`).join('');
+}
+
+function navigateOnCrash() {
+  if (redirectScheduled) return;
+  redirectScheduled = true;
+  const target = gameOverReason === 'alcohol' ? '../../alchol.html' : '../../choque.html';
+  setTimeout(() => { window.location.href = target; }, 1400);
+}
+
+// --- Dibuix ---
 function drawRoad() {
-  ctx.fillStyle = "#555";
+  ctx.fillStyle = "#333";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  // Dibujar carriles con reglas de tránsito
+  // Dibuixar carrils amb regles de trànsit
   if (tipoCarretera === 'urbana') {
     ctx.strokeStyle = "#fff";
     ctx.lineWidth = 4;
@@ -97,16 +187,16 @@ function drawRoad() {
 
   ctx.setLineDash([]);
 
-  // Dibujar muro
+  // Dibuixar mur
   ctx.fillStyle = "#888";
   ctx.fillRect(wall.x, wall.y, wall.w, wall.h);
 
-  // Reglas de tránsito
+  // Regles de trànsit
   let regla = "";
-  if (tipoCarretera === 'urbana') regla = "Zona urbana: Líneas sólidas, no cambiar de carril";
-  else if (tipoCarretera === 'interurbana') regla = "Carretera interurbana: Adelantar con precaución";
-  else if (tipoCarretera === 'travesia') regla = "Travesía: Atención a peatones";
-  else regla = "Turismo interurbana: Respeta señales";
+  if (tipoCarretera === 'urbana') regla = "Zona urbana: Línies sòlides, no canviar de carril";
+  else if (tipoCarretera === 'interurbana') regla = "Carretera interurbana: Avançar amb precaució";
+  else if (tipoCarretera === 'travesia') regla = "Travessia: Atenció a vianants";
+  else regla = "Turisme interurbana: Respecta senyals";
 
   ctx.fillStyle = "#fff";
   ctx.font = "16px Arial";
@@ -115,65 +205,43 @@ function drawRoad() {
 
 function drawCar() {
   const vehicleType = selectedVehicle.toLowerCase();
-  
-  // El coche está fijado en el centro inferior de la pantalla
+  let color, text;
   switch(vehicleType) {
     case 'turismo':
-      // Turismo - Coche pequeño azul
-      ctx.fillStyle = "blue";
-      ctx.fillRect(car.x, car.y, car.w, car.h);
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.fillRect(car.x + 6, car.y + 8, car.w - 12, 14);
+      color = "lightblue";
+      text = "Turismo";
       break;
-      
     case 'autobus':
     case 'vmp':
-      // Autobús/VMP - Coche más grande y amarillo
-      ctx.fillStyle = "#FFD700";
-      ctx.fillRect(car.x - 5, car.y, car.w + 10, car.h);
-      ctx.fillStyle = "rgba(0,0,0,0.2)";
-      ctx.fillRect(car.x + 2, car.y + 10, car.w - 4, 10);
-      ctx.fillRect(car.x + 2, car.y + 25, car.w - 4, 10);
+      color = "lightyellow";
+      text = "Autobus";
       break;
-      
     case 'motocicleta':
-      // Motocicleta - Coche muy pequeño y rojo
-      ctx.fillStyle = "red";
-      ctx.fillRect(car.x + 8, car.y, car.w - 16, car.h);
-      ctx.fillRect(car.x + 5, car.y + 20, car.w - 10, 5);
-      ctx.fillRect(car.x + 5, car.y + 35, car.w - 10, 5);
+      color = "lightcoral";
+      text = "Motocicleta";
       break;
-      
     case 'ciclos':
-      // Bicicleta - Pequeña y verde
-      ctx.fillStyle = "green";
-      ctx.fillRect(car.x + 10, car.y + 10, car.w - 20, car.h - 20);
-      ctx.fillStyle = "black";
-      ctx.beginPath();
-      ctx.arc(car.x + 8, car.y + 30, 6, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(car.x + car.w - 8, car.y + 30, 6, 0, Math.PI * 2);
-      ctx.fill();
+      color = "lightgreen";
+      text = "Ciclos";
       break;
-      
     case 'camiones':
-      // Camión - Muy grande y marrón
-      ctx.fillStyle = "#8B4513";
-      ctx.fillRect(car.x - 10, car.y, car.w + 20, car.h);
-      ctx.fillStyle = "rgba(255,255,255,0.2)";
-      for(let i = 0; i < 3; i++) {
-        ctx.fillRect(car.x - 8, car.y + 8 + i * 12, car.w + 16, 8);
-      }
+      color = "#D2B48C";
+      text = "Camiones";
       break;
-      
     default:
-      // Por defecto turismo
-      ctx.fillStyle = "blue";
-      ctx.fillRect(car.x, car.y, car.w, car.h);
-      ctx.fillStyle = "rgba(255,255,255,0.3)";
-      ctx.fillRect(car.x + 6, car.y + 8, car.w - 12, 14);
+      color = "lightblue";
+      text = "Turismo";
   }
+  ctx.fillStyle = color;
+  ctx.fillRect(car.x, car.y, car.w, car.h);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.strokeRect(car.x, car.y, car.w, car.h);
+  ctx.fillStyle = "black";
+  ctx.font = "10px Arial";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, car.x + car.w/2, car.y + car.h/2);
 }
 
 function spawnObstacle() {
@@ -183,11 +251,11 @@ function spawnObstacle() {
   // Elegir carril (0 a 3)
   const lane = Math.floor(Math.random() * laneCount);
 
-  // Centrar obstáculo en el carril
+  // Centrar obstacle en el carril
   const x = lane * laneWidth + (laneWidth - ow) / 2;
 
-  // Velocidad individual del obstáculo
-  const speedVariation = Math.random() * 2 + 0.5; // entre 0.5 y 2.5
+  // Velocitat individual de l'obstacle
+  const speedVariation = Math.random() * 2 + 0.5; // entre 0.5 i 2.5
 
   obstacles.push({
     x: x,
@@ -195,13 +263,14 @@ function spawnObstacle() {
     w: ow,
     h: oh,
     lane: lane,
-    speed: speedVariation
+    speed: speedVariation,
+    type: vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)]
   });
 }
 
 function updateObstacles() {
   obstacles.forEach(o => {
-    // cada coche tiene su propia velocidad + influencia global
+    // cada cotxe té la seva pròpia velocitat + influència global
     o.y += (speed / 30 + 1) * o.speed;
   });
 
@@ -209,12 +278,68 @@ function updateObstacles() {
 }
 
 function drawObstacles() {
-  ctx.fillStyle = "red";
-  obstacles.forEach(o => ctx.fillRect(o.x, o.y, o.w, o.h));
+  obstacles.forEach(o => {
+    let color;
+    switch(o.type.toLowerCase()) {
+      case 'turismo':
+        color = "lightblue";
+        break;
+      case 'autobus':
+        color = "lightyellow";
+        break;
+      case 'motocicleta':
+        color = "lightcoral";
+        break;
+      case 'ciclos':
+        color = "lightgreen";
+        break;
+      case 'camiones':
+        color = "#D2B48C";
+        break;
+      default:
+        color = "lightgray";
+    }
+    ctx.fillStyle = color;
+    ctx.fillRect(o.x, o.y, o.w, o.h);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(o.x, o.y, o.w, o.h);
+    ctx.fillStyle = "black";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(o.type, o.x + o.w/2, o.y + o.h/2);
+  });
+}
+
+function checkRuleViolations() {
+  // Detectar canvi de carril brusć
+  const currentLane = Math.floor(car.x / laneWidth);
+  
+  if (lastCarLane !== -1 && lastCarLane !== currentLane) {
+    const now = Date.now();
+    if (now - lastLaneChangeTime > 500) {
+      // Infracció: canvi de carril sense avís
+      penalties = Math.min(100, penalties + 15);
+      lastLaneChangeTime = now;
+    }
+  }
+  
+  lastCarLane = currentLane;
+  
+  // Detectar excés de velocitat en zona urbana
+  const now = Date.now();
+  if (now - lastSpeedCheckTime > 1000) {
+    const speedLimit = tipoCarretera === 'urbana' ? 50 : 90;
+    if (speed > speedLimit) {
+      penalties = Math.min(100, penalties + 10);
+    }
+    lastSpeedCheckTime = now;
+  }
 }
 
 function collision() {
-  // Colisión con obstáculos
+  // Colisió amb obstacles
   for (let o of obstacles) {
     if (
       car.x < o.x + o.w &&
@@ -227,7 +352,7 @@ function collision() {
     }
   }
 
-  // Colisión con muro
+  // Colisió amb mur
   if (
     car.x < wall.x + wall.w &&
     car.x + car.w > wall.x &&
@@ -235,23 +360,45 @@ function collision() {
     car.y + car.h > wall.y
   ) {
     gameOver = true;
+    setGameOverReason('choque');
   }
 }
 
 function updateBars() {
   document.getElementById("alcohol").style.width = intox + "%";
+  document.getElementById("alcohol-value").textContent = intox + "%";
   document.getElementById("distract").style.width = distract + "%";
+  document.getElementById("distract-value").textContent = distract + "%";
+  document.getElementById("penalties").style.width = penalties + "%";
+  document.getElementById("penalties-value").textContent = penalties + "%";
 }
 
 function applyDebuffs() {
   reactionDelay = intox >= 40 ? 300 : 0;
   invert = intox >= 80;
-  if (intox >= 100 || distract >= 100) gameOver = true;
+
+  if (intox >= 100) {
+    gameOver = true;
+    setGameOverReason('alcohol');
+  }
+
+  if (distract >= 100 && gameOverReason !== 'alcohol') {
+    gameOver = true;
+    setGameOverReason('choque');
+  }
+
+  if (penalties >= 100 && gameOverReason !== 'alcohol') {
+    gameOver = true;
+    setGameOverReason('choque');
+  }
 }
 
 function randomEvent() {
   const e = events[Math.floor(Math.random() * events.length)];
-  document.getElementById("event").textContent = e.text;
+  const eventElement = document.getElementById("event");
+  if (eventElement) {
+    eventElement.textContent = e.text;
+  }
   currentEvent = e;
   eventStartTime = Date.now();
   resistCount = 0;
@@ -265,7 +412,10 @@ function randomEvent() {
       applyDebuffs();
       updateBars();
       currentEvent = null;
-      document.getElementById("eventPrompt").textContent = "";
+      const promptElement = document.getElementById("eventPrompt");
+      if (promptElement) {
+        promptElement.textContent = "";
+      }
     }
   }, 5000);
 
@@ -276,8 +426,11 @@ function updateEventPromptDisplay() {
   if (!currentEvent) return;
   const elapsed = (Date.now() - eventStartTime) / 1000;
   const remaining = Math.max(0, 5 - elapsed);
-  document.getElementById("eventPrompt").textContent =
-    `Pulsa R para resistir (${resistCount}/10), Q para aceptar (${remaining.toFixed(1)}s)`;
+  const promptElement = document.getElementById("eventPrompt");
+  if (promptElement) {
+    promptElement.textContent =
+      `Prem R per resistir (${resistCount}/10), Q per acceptar (${remaining.toFixed(1)}s)`;
+  }
 }
 
 // --- Input ---
@@ -294,7 +447,10 @@ document.addEventListener('keydown', (e) => {
         if (eventTimeout) clearTimeout(eventTimeout);
         currentEvent = null;
         resistCount = 0;
-        document.getElementById("eventPrompt").textContent = "";
+        const promptElement = document.getElementById("eventPrompt");
+        if (promptElement) {
+          promptElement.textContent = "";
+        }
       } else {
         updateEventPromptDisplay();
       }
@@ -309,7 +465,10 @@ document.addEventListener('keydown', (e) => {
       updateBars();
       currentEvent = null;
       resistCount = 0;
-      document.getElementById("eventPrompt").textContent = "";
+      const promptElement = document.getElementById("eventPrompt");
+      if (promptElement) {
+        promptElement.textContent = "";
+      }
       return;
     }
   }
@@ -330,9 +489,11 @@ function loop() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "white";
     ctx.font = "24px Arial";
-    ctx.fillText("💥 ACCIDENTE 💥", canvas.width / 2 - 88, canvas.height / 2 - 10);
+    const message = gameOverReason === 'alcohol' ? "🚫 CONDUCCIÓ EBRIA" : "💥 ACCIDENT 💥";
+    ctx.fillText(message, canvas.width / 2 - 108, canvas.height / 2 - 10);
     ctx.font = "14px Arial";
-    ctx.fillText("F5 para reiniciar", canvas.width / 2 - 48, canvas.height / 2 + 20);
+    ctx.fillText("Redirigint...", canvas.width / 2 - 56, canvas.height / 2 + 20);
+    navigateOnCrash();
     return;
   }
 
@@ -374,6 +535,7 @@ function loop() {
   car.x += car.speedX;
   car.y += car.speedY;
 
+  // Mantenir el cotxe dins dels límits (fixat)
   if (car.x < 0) car.x = 0;
   if (car.x + car.w > canvas.width) car.x = canvas.width - car.w;
   if (car.y < 0) car.y = 0;
@@ -385,6 +547,7 @@ function loop() {
 
   updateObstacles();
   collision();
+  checkRuleViolations();
 
   if (spawnCooldown > 0) spawnCooldown--;
   if (spawnCooldown <= 0 && Math.random() < spawnRate && obstacles.length < maxObstacles) {
@@ -407,5 +570,7 @@ function loop() {
 
   requestAnimationFrame(loop);
 }
+
+renderRules();
 
 loop();

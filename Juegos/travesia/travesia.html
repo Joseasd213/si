@@ -1,78 +1,81 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Juego educativo sobre conducción responsable en travesías">
-  <title>Conducción Responsable - Modo Travesía</title>
+  <meta name="description" content="Joc educatiu sobre conducció responsable en travesies">
+  <title>Conducció Responsable - Mode Travessia</title>
   <link rel="stylesheet" href="travesia.css">
 </head>
 <body>
-  <main class="game-container" role="main" aria-label="Juego de Conducción Responsable - Modo Travesía">
-    <!-- ENCABEZADO -->
+  <main class="game-container" role="main" aria-label="Joc de Conducció Responsable - Mode Travessia">
+    <!-- ENCAPÇALAT -->
     <header class="game-header">
-      <h1 class="game-title">🚗 Conducción Responsable</h1>
-      <p class="game-subtitle">Travesías</p>
-      <p class="game-description">Evita obstáculos y mantén el control de tu vehículo</p>
+      <h1 class="game-title">🚗 Conducció Responsable</h1>
+      <p class="game-subtitle">Travessies</p>
+      <p class="game-description">Evita obstacles i manté el control del teu vehicle</p>
     </header>
 
-    <!-- CUERPO DEL JUEGO -->
+    <!-- COS DEL JOC -->
     <section class="game-body">
       <!-- HUD (Heads-Up Display) -->
-      <section id="hud" class="game-hud" role="region" aria-label="Estado del jugador">
-        <div class="hud-item" aria-live="polite" aria-label="Nivel de intoxicación">
-          <span class="hud-label">🍺 Intoxicación</span>
+      <section id="hud" class="game-hud full-width" role="region" aria-label="Estat del jugador">
+        <div class="hud-item" aria-live="polite" aria-label="Nivell d'intoxicació">
+          <span class="hud-label">🍺 Intoxicació</span>
           <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <div id="alcohol" class="fill" aria-hidden="true"></div>
           </div>
           <span class="hud-value" id="alcohol-value">0%</span>
         </div>
-        <div class="hud-item" aria-live="polite" aria-label="Nivel de distracción">
-          <span class="hud-label">📱 Distracción</span>
+        <div class="hud-item" aria-live="polite" aria-label="Nivell de distracció">
+          <span class="hud-label">📱 Distracció</span>
           <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <div id="distract" class="fill" aria-hidden="true"></div>
           </div>
           <span class="hud-value" id="distract-value">0%</span>
         </div>
+        <div class="hud-item" aria-live="polite" aria-label="Sancions acumulades">
+          <span class="hud-label">🚨 Sancions</span>
+          <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div id="penalties" class="fill" aria-hidden="true"></div>
+          </div>
+          <span class="hud-value" id="penalties-value">0%</span>
+        </div>
       </section>
 
-      <!-- Información del juego -->
-      <section class="game-info">
+      <!-- Informació del joc -->
+      <section class="game-info full-width">
         <div class="game-stats">
           <p class="speed-display">
-            <span class="stat-label">Velocidad:</span>
+            <span class="stat-label">Velocitat:</span>
             <span id="speed" class="stat-value">60</span> km/h
           </p>
           <p class="distance-display">
-            <span class="stat-label">Distancia:</span>
+            <span class="stat-label">Distància:</span>
             <span id="distance" class="stat-value">0</span> km
           </p>
         </div>
         
         <details class="controls-info">
-          <summary class="summary-btn">📋 Controles</summary>
+          <summary class="summary-btn">📋 Controls</summary>
           <div class="controls-content">
             <table class="controls-table">
               <tbody>
                 <tr>
                   <td><kbd>W A S D</kbd></td>
-                  <td>Mover auto</td>
+                  <td>Mou auto</td>
                 </tr>
                 <tr>
                   <td><kbd>↑ ↓</kbd></td>
-                  <td>Ajustar velocidad</td>
+                  <td>Ajusta velocitat</td>
                 </tr>
                 <tr>
                   <td><kbd>R</kbd></td>
-                  <td>Resistir evento</td>
+                  <td>Resistent evento</td>
                 </tr>
                 <tr>
                   <td><kbd>Q</kbd></td>
-                  <td>Aceptar decisión</td>
-                </tr>
-                <tr>
-                  <td><kbd>P</kbd></td>
-                  <td>Pausar/Reanudar</td>
+                  <td>Accepta decisió</td>
                 </tr>
               </tbody>
             </table>
@@ -80,32 +83,27 @@
         </details>
       </section>
 
-      <!-- Eventos del juego -->
-      <section class="game-events" role="region" aria-label="Eventos del juego" aria-live="assertive">
-        <div id="event" class="event-message"></div>
-        <div id="eventPrompt" class="event-prompt"></div>
-      </section>
+      <div class="game-play">
+        <!-- Esdeveniments del joc -->
+        <section class="game-events" role="region" aria-label="Esdeveniments del joc" aria-live="assertive">
+          <div id="event" class="event-message"></div>
+          <div id="eventPrompt" class="event-prompt"></div>
+        </section>
 
-      <!-- Canvas del juego -->
-      <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Área de juego con visualización de travesía y obstáculos"></canvas>
+        <!-- Canvas del joc -->
+        <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Àrea de joc amb visualització de travessia i obstacles"></canvas>
 
-      <!-- Controles del juego -->
-      <div class="game-controls">
-        <button id="pauseBtn" class="btn btn-secondary" aria-pressed="false" title="Pausar o reanudar el juego (P)">
-          <span class="btn-icon">⏸️</span> Pausar
-        </button>
-        <button id="restartBtn" class="btn btn-secondary" title="Reiniciar el juego">
-          <span class="btn-icon">🔄</span> Reiniciar
-        </button>
-        <button id="homeBtn" class="btn btn-secondary" title="Volver al menú principal">
-          <span class="btn-icon">🏠</span> Inicio
-        </button>
-      </div>
+      <aside class="rule-panel" role="complementary" aria-label="Panell de regles de conducció">
+        <h2>Regles de la via</h2>
+        <div id="roadRules" class="rule-list"></div>
+        <h3>Regles per al teu vehicle</h3>
+        <div id="vehicleRules" class="rule-list"></div>
+      </aside>
     </section>
 
-    <!-- Pie de página -->
+    <!-- Peu de pàgina -->
     <footer class="game-footer">
-      <p class="footer-text">Conducción responsable = Vida responsable</p>
+      <p class="footer-text">Conducció responsable = Vida responsable</p>
     </footer>
   </main>
 
