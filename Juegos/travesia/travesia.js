@@ -38,6 +38,12 @@ const speedLimits = {
 // Velocitat ambiental (controlada per fletxes amunt/avall)
 let minSpeed = 10;
 let maxSpeed = 180;
+
+const lowerVehicle = selectedVehicle.toLowerCase();
+if (lowerVehicle === 'vmp' || lowerVehicle === 'ciclos') {
+  maxSpeed = 45;
+}
+
 let acceleration = 1;
 let speed = 40; // Velocidad inicial bajo el límite de travesía (50 km/h)
 

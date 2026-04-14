@@ -316,6 +316,17 @@ function drawCar() {
   }
 }
 
+function isSafeDistance(lane, y) {
+  const playerLane = Math.floor(car.x / laneWidth);
+
+  if (lane !== playerLane) return true;
+
+  const safeDistance = 150;
+  const distance = Math.abs(car.y - y);
+
+  return distance > safeDistance;
+}
+
 function spawnObstacle() {
   const ow = 30;
   const oh = 50;
@@ -331,41 +342,99 @@ function spawnObstacle() {
   const x = lane * laneWidth + (laneWidth - ow) / 2;
 
   // Velocitat individual de l'obstacle
-  const speedVariation = Math.random() * 2 + 0.5; // entre 0.5 i 2.5
+  let type = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
 
+  let baseObstacleSpeed;
+
+  switch(type.toLowerCase()) {
+    case 'camiones':
+      baseObstacleSpeed = 1.2;
+      break;
+    case 'autobus':
+      baseObstacleSpeed = 1.5;
+      break;
+    case 'ciclos':
+    case 'vmp':
+      baseObstacleSpeed = 1;
+      break;
+    case 'motocicleta':
+      baseObstacleSpeed = 2.5;
+      break;
+    default:
+      baseObstacleSpeed = 2;
+  }
   // Determinar posición inicial según el lado
-  const isLeftSide = lane < 2;
-  const y = isLeftSide 
-    ? canvas.height + oh + Math.random() * 200  // Desde abajo para lado izquierdo
-    : -oh - Math.random() * 200;  // Desde arriba para lado derecho
+  let y;
+  let attempts = 0;
+  const maxAttempts = 10;
 
-  obstacles.push({
-    x: x,
-    y: y,
-    w: ow,
-    h: oh,
-    lane: lane,
-    speed: speedVariation,
-    type: vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)]
+  do {
+    const isLeftSide = lane < 2;
+
+    y = isLeftSide
+      ? canvas.height + oh + Math.random() * 200
+      : -oh - Math.random() * 200;
+
+    attempts++;
+
+  } while (!isSafeDistance(lane, y) && attempts < maxAttempts);
+
+obstacles.push({
+  x: x,
+  y: y,
+  w: ow,
+  h: oh,
+  lane: lane,
+  speed: baseObstacleSpeed,
+  type: type
   });
 }
 
-function updateObstacles() {
-  obstacles.forEach(o => {
-    // Determinar qué lado del muro está el obstáculo
-    const isLeftSide = o.lane < 2; // Carriles 0-1 a la izquierda
-    
-    if (isLeftSide) {
-      // En el lado izquierdo, los vehículos avanzan hacia arriba (sentido contrario)
-      o.y -= (speed / 30 + 1) * o.speed;
-    } else {
-      // En el lado derecho, los vehículos avanzan hacia abajo (sentido normal)
-      o.y += (speed / 30 + 1) * o.speed;
+  function updateObstacles() {
+    const safeDistance = 140;
+    const playerLane = Math.floor(car.x / laneWidth);
+
+    for (let i = 0; i < obstacles.length; i++) {
+      const o = obstacles[i];
+
+      let canMove = true;
+
+      // 1. Evitar al jugador
+      if (o.lane === playerLane) {
+        const distPlayer = Math.abs(o.y - car.y);
+        if (distPlayer < safeDistance) {
+          canMove = false;
+        }
+      }
+
+      // 2. Evitar otros obstáculos (REGLA NUEVA)
+      for (let j = 0; j < obstacles.length; j++) {
+        if (i === j) continue;
+
+        const other = obstacles[j];
+
+        // solo si están en el mismo carril
+        if (o.lane === other.lane) {
+          const dist = Math.abs(o.y - other.y);
+
+          if (dist < safeDistance) {
+            // si el otro está delante, frena este
+            if ((o.y < other.y && o.speed > 0) || (o.y > other.y && o.speed < 0)) {
+              canMove = false;
+            }
+          }
+        }
+      }
+
+      // Movimiento normal si no hay bloqueo
+      if (canMove) {
+        const isLeftSide = o.lane < 2;
+        o.y += isLeftSide ? -o.speed * 2 : o.speed * 2;
+      }
     }
-  });
 
-  obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
-}
+    obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
+  }
 
 function drawObstacles() {
   obstacles.forEach(o => {
@@ -410,29 +479,21 @@ function drawObstacles() {
   });
 }
 
-function checkRuleViolations() {
-  const currentLane = Math.floor(car.x / laneWidth);
+  function checkRuleViolations() {
+    const currentLane = Math.floor(car.x / laneWidth);
 
-  if (tipoCarretera === 'urbana' && lastCarLane !== -1 && lastCarLane !== currentLane) {
-    const now = Date.now();
-    if (now - lastLaneChangeTime > 500) {
-      penalties += 1; // Sanción por cambiar carril
-      console.log(`🚨 Sanción #${penalties}: Cambio de carril brusco en zona urbana`);
-      lastLaneChangeTime = now;
+    // solo actualizar estado, sin sancionar cambio de carril
+    lastCarLane = currentLane;
+
+    const speedLimit = speedLimits[tipoCarretera] || 90;
+    if (speed > speedLimit && !wasOverSpeed) {
+      penalties += 1;
+      console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
+      wasOverSpeed = true;
+    } else if (speed <= speedLimit) {
+      wasOverSpeed = false;
     }
   }
-
-  lastCarLane = currentLane;
-
-  const speedLimit = speedLimits[tipoCarretera] || 90;
-  if (speed > speedLimit && !wasOverSpeed) {
-    penalties += 1; // Sanción por exceder velocidad
-    console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
-    wasOverSpeed = true;
-  } else if (speed <= speedLimit) {
-    wasOverSpeed = false;
-  }
-}
 
 function collision() {
   // Colisió amb obstacles

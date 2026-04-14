@@ -291,7 +291,6 @@ body {
 }
 body {
   overflow-y: scroll;
-}
   width: 100%;
 }
 
@@ -371,14 +370,14 @@ body {
 .event-message {
   margin-bottom: 8px;
   min-height: 24px;
-  font-size: 14px;
+  font-size: 34px;
   color: #cbd5e0;
   font-weight: 500;
   animation: fadeIn 0.4s ease;
 }
 
 .event-prompt {
-  font-size: 12px;
+  font-size: 22px;
   color: #a0aec0;
   animation: fadeIn 0.4s ease 0.1s both;
 }
@@ -601,11 +600,11 @@ body {
   }
 
   .event-message {
-    font-size: 13px;
+    font-size: 23px;
     min-height: 20px;
   }
 
   .event-prompt {
-    font-size: 11px;
+    font-size: 21px;
   }
 }
