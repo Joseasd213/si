@@ -72,7 +72,7 @@
 
   <div class="video-container">
     <video autoplay muted>
-      <source src="videos-finales/alchol.mp4" type="video/mp4">
+      <source id="videoSource" src="videos-finales/alchol.mp4" type="video/mp4">
       Tu navegador no soporta video.
     </video>
   </div>
@@ -80,7 +80,23 @@
 
   <script>
   const video = document.querySelector("video");
+  const videoSource = document.getElementById("videoSource");
   const finalText = document.getElementById("final-text");
+
+  // Obtener vehículo de la URL
+  const params = new URLSearchParams(window.location.search);
+  const vehicle = params.get('vehicle') || 'default';
+
+  // Seleccionar video según vehículo
+  let videoFile = 'videos-finales/alchol.mp4';
+  if (vehicle.toLowerCase() === 'motocicleta') {
+    videoFile = 'videos-finales/moto alcohol.mp4';
+  } else if (vehicle.toLowerCase() === 'vmp') {
+    videoFile = 'videos-finales/VMP_alcohol.mp4';
+  }
+
+  videoSource.src = videoFile;
+  video.load();
 
   video.addEventListener("ended", () => {
     finalText.classList.add("show");

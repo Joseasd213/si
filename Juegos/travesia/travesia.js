@@ -228,8 +228,9 @@ function navigateOnCrash() {
   if (redirectScheduled) return;
   redirectScheduled = true;
   let target = '../../choque.html';
-  if (gameOverReason === 'alcohol') target = '../../alchol.html';
+  if (gameOverReason === 'alcohol') target = `../../alchol.html?vehicle=${encodeURIComponent(selectedVehicle)}`;
   else if (gameOverReason === 'infraccion') target = '../../infraccion.html';
+  else target = `../../choque.html?vehicle=${encodeURIComponent(selectedVehicle)}`;
   setTimeout(() => { window.location.href = target; }, 1400);
 }
 
@@ -270,8 +271,8 @@ function drawRoad() {
   else if (tipoCarretera === 'travesia') regla = "Travessia: Atenció a vianants";
   else regla = "Turisme interurbana: Respecta senyals";
 
-  ctx.fillStyle = "#fff";
-  ctx.font = "16px Arial";
+  ctx.fillStyle = "#cbd5e0";
+  ctx.font = "24px Arial";
   ctx.fillText(regla, 10, 30);
 }
 
@@ -315,7 +316,7 @@ function drawCar() {
     ctx.lineWidth = 1;
     ctx.strokeRect(car.x, car.y, car.w, car.h);
     ctx.fillStyle = "black";
-    ctx.font = "10px Arial";
+    ctx.font = "15px Arial";
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillText(text, car.x + car.w/2, car.y + car.h/2);
@@ -408,7 +409,7 @@ function drawObstacles() {
       ctx.lineWidth = 1;
       ctx.strokeRect(o.x, o.y, o.w, o.h);
       ctx.fillStyle = "black";
-      ctx.font = "10px Arial";
+      ctx.font = "15px Arial";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(getVehicleLabel(o.type), o.x + o.w/2, o.y + o.h/2);
@@ -587,15 +588,15 @@ function loop() {
   if (gameOver) {
     ctx.fillStyle = "rgba(0,0,0,0.7)";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "white";
-    ctx.font = "24px Arial";
+    ctx.fillStyle = "#cbd5e0";
+    ctx.font = "36px Arial";
     let message = "";
     if (gameOverReason === 'alcohol') message = "🚫 CONDUCCIÓ EBRIA";
     else if (gameOverReason === 'infraccion') message = "🚫 DEMASIADAS INFRACCIONES";
     else if (gameOverReason === 'goal') message = "🎉 OBJECTIU ASSOLIT";
     else message = "💥 ACCIDENT 💥";
     ctx.fillText(message, canvas.width / 2 - 108, canvas.height / 2 - 10);
-    ctx.font = "14px Arial";
+    ctx.font = "21px Arial";
     if (gameOverReason === 'goal') {
       ctx.fillText("Partida finalitzada", canvas.width / 2 - 70, canvas.height / 2 + 20);
       return;
