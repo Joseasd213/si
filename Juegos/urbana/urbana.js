@@ -8,10 +8,9 @@ const tipoCarretera = 'urbana';
 // Llegir vehicle de localStorage
 const selectedVehicle = localStorage.getItem('selectedVehicle') || 'Turismo';
 
-const vehicleTypes = ['Turismo', 'Autobus', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
+const vehicleTypes = ['Turismo', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
 const vehicleImageMap = {
   turismo: '../../png-autos/turismo.png',
-  autobus: '../../images/coche.png',
   vmp: '../../png-autos/patinete electrico.png',
   motocicleta: '../../png-autos/moto_avatar_si.png',
   ciclos: '../../png-autos/ciclo.png',
