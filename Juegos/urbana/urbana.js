@@ -59,6 +59,8 @@ let lastCarLane = -1;
 let lastSpeedCheckTime = 0;
 let lastLaneChangeTime = 0;
 let wasOverSpeed = false;
+let nearMissCooldown = new Set();
+const nearMissDistance = 120; // distancia para considerar "se acercó voluntariamente"
 
 // Cotxe - Apareix a la dreta o esquerra
 const car = {
@@ -487,7 +489,6 @@ function drawObstacles() {
   function checkRuleViolations() {
     const currentLane = Math.floor(car.x / laneWidth);
 
-    // solo actualizar estado, sin sancionar cambio de carril
     lastCarLane = currentLane;
 
     const speedLimit = speedLimits[tipoCarretera] || 90;
@@ -497,6 +498,12 @@ function drawObstacles() {
       wasOverSpeed = true;
     } else if (speed <= speedLimit) {
       wasOverSpeed = false;
+    }
+
+    // ✅ AQUÍ VA (IMPORTANTE)
+    if (penalties >= 12 && !gameOver) {
+      gameOver = true;
+      setGameOverReason('infraccion');
     }
   }
 
@@ -524,6 +531,35 @@ function collision() {
     gameOver = true;
     setGameOverReason('choque');
   }
+}
+
+function checkNearMiss() {
+  const playerLane = Math.floor(car.x / laneWidth);
+
+  obstacles.forEach((o, index) => {
+    const distX = Math.abs(car.x - o.x);
+    const distY = Math.abs(car.y - o.y);
+
+    const closeEnough =
+      o.lane === playerLane &&
+      distX < nearMissDistance &&
+      distY < nearMissDistance;
+
+    const key = `${index}`;
+
+    if (closeEnough) {
+      // Solo sanciona si no estaba ya en estado cercano
+      if (!nearMissCooldown.has(key)) {
+        penalties += 1;
+        nearMissCooldown.add(key);
+
+        console.log("⚠️ Near miss voluntario +1 sanción. Total:", penalties);
+      }
+    } else {
+      // cuando se aleja, permite volver a sancionar si repite
+      nearMissCooldown.delete(key);
+    }
+  });
 }
 
 function updateBars() {
@@ -716,6 +752,7 @@ function loop() {
   updateObstacles();
   collision();
   checkRuleViolations();
+  checkNearMiss();
 
   if (spawnCooldown > 0) spawnCooldown--;
   if (spawnCooldown <= 0 && Math.random() < spawnRate && obstacles.length < maxObstacles) {
