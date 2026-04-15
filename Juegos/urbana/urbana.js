@@ -408,24 +408,28 @@ obstacles.push({
         }
       }
 
-      // 2. Evitar otros obstáculos (REGLA NUEVA)
-      for (let j = 0; j < obstacles.length; j++) {
-        if (i === j) continue;
+// 2. Evitar otros obstáculos (mejorado tipo tráfico real)
+for (let j = 0; j < obstacles.length; j++) {
+  if (i === j) continue;
 
-        const other = obstacles[j];
+  const other = obstacles[j];
 
-        // solo si están en el mismo carril
-        if (o.lane === other.lane) {
-          const dist = Math.abs(o.y - other.y);
+  // Solo en el mismo carril
+  if (o.lane === other.lane) {
+    const dist = o.y - other.y;
 
-          if (dist < safeDistance) {
-            // si el otro está delante, frena este
-            if ((o.y < other.y && o.speed > 0) || (o.y > other.y && o.speed < 0)) {
-              canMove = false;
-            }
-          }
-        }
-      }
+    // Detectar si hay otro vehículo delante en la misma dirección
+    const sameDirection =
+      (o.speed > 0 && other.y > o.y) ||
+      (o.speed < 0 && other.y < o.y);
+
+    // Si está demasiado cerca y hay riesgo de choque
+    if (Math.abs(dist) < safeDistance && sameDirection) {
+      canMove = false;
+      break;
+    }
+  }
+}
 
       // Movimiento normal si no hay bloqueo
       if (canMove) {
