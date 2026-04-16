@@ -60,6 +60,7 @@ let lastLaneChangeTime = 0;
 let wasOverSpeed = false;
 let nearMissCooldown = new Set();
 const nearMissDistance = 120; // distancia para considerar "se acercó voluntariamente"
+const rapidLaneChangeWindowMs = 1200;
 
 // Cotxe - Apareix a la dreta o esquerra
 const car = {
@@ -399,6 +400,7 @@ function updateObstacles() {
   for (let i = 0; i < obstacles.length; i++) {
     const o = obstacles[i];
     let canMove = true;
+    const isLeftSide = o.lane < 2;
 
     // 1. Evitar al jugador
     if (o.lane === playerLane) {
@@ -415,13 +417,10 @@ function updateObstacles() {
       const other = obstacles[j];
 
       if (o.lane === other.lane) {
-        const dist = o.y - other.y;
+        const distance = Math.abs(o.y - other.y);
+        const isOtherAhead = isLeftSide ? other.y < o.y : other.y > o.y;
 
-        const sameDirection =
-          (o.speed > 0 && other.y > o.y) ||
-          (o.speed < 0 && other.y < o.y);
-
-        if (Math.abs(dist) < safeDistance && sameDirection) {
+        if (distance < safeDistance && isOtherAhead) {
           canMove = false;
           break;
         }
@@ -430,7 +429,6 @@ function updateObstacles() {
 
     // Movimiento normal si no hay bloqueo
     if (canMove) {
-      const isLeftSide = o.lane < 2;
       o.y += isLeftSide ? -o.speed * 2 : o.speed * 2;
     }
   }
@@ -480,15 +478,26 @@ function drawObstacles() {
   });
 }
 
-  function checkRuleViolations() {
-    const currentLane = Math.floor(car.x / laneWidth);
+function checkRuleViolations() {
+  const currentLane = Math.floor(car.x / laneWidth);
+  const now = Date.now();
 
+  if (lastCarLane === -1) {
     lastCarLane = currentLane;
-
-    const speedLimit = speedLimits[tipoCarretera] || 90;
-    if (speed > speedLimit && !wasOverSpeed) {
+  } else if (currentLane !== lastCarLane) {
+    if (lastLaneChangeTime && now - lastLaneChangeTime < rapidLaneChangeWindowMs) {
       penalties += 1;
-      console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
+      console.log(`⚠️ Sanción #${penalties}: Cambio brusco de carril`);
+    }
+
+    lastLaneChangeTime = now;
+    lastCarLane = currentLane;
+  }
+
+  const speedLimit = speedLimits[tipoCarretera] || 90;
+  if (speed > speedLimit && !wasOverSpeed) {
+    penalties += 1;
+    console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
       wasOverSpeed = true;
     } else if (speed <= speedLimit) {
       wasOverSpeed = false;
