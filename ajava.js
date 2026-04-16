@@ -10,7 +10,6 @@ prev.addEventListener('click', () => {
     track.scrollBy({ left: -420, behavior: 'smooth' });
 });
 
-// Keyboard navigation for slider
 document.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') {
         track.scrollBy({ left: 420, behavior: 'smooth' });
@@ -19,7 +18,6 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// Opcions dinamicas per a vehicles
 const vehicleButtons = document.querySelectorAll('.vehicle-btn');
 const optionsSection = document.getElementById('vehicle-options');
 const vehicleTitle = document.getElementById('vehicle-title');
@@ -30,11 +28,39 @@ const optionCards = document.querySelectorAll('.option-card');
 let selectedOption = null;
 let selectedVehicle = null;
 
+function getRestrictionMessage(vehicle, roadType) {
+    if (roadType !== 'interurbana') return '';
+
+    if (vehicle === 'VMP') {
+        return 'Els VMP no poden circular per carreteres interurbanes.';
+    }
+
+    return '';
+}
+
+function updateRoadAvailability(vehicle) {
+    optionCards.forEach(card => {
+        const restrictionMessage = getRestrictionMessage(vehicle, card.dataset.type);
+        const isDisabled = Boolean(restrictionMessage);
+
+        card.dataset.disabled = isDisabled ? 'true' : 'false';
+        card.style.opacity = isDisabled ? '0.45' : '1';
+        card.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
+        card.title = restrictionMessage;
+
+        if (isDisabled && selectedOption === card.dataset.type) {
+            card.classList.remove('selected');
+            selectedOption = null;
+        }
+    });
+}
+
 function showVehicleOptions(vehicle) {
     vehicleTitle.textContent = `Opcions per a ${vehicle}`;
     optionsSection.style.display = 'block';
-    selectedOption = null; // Reset selection
+    selectedOption = null;
     optionCards.forEach(card => card.classList.remove('selected'));
+    updateRoadAvailability(vehicle);
 }
 
 function hideVehicleOptions() {
@@ -51,6 +77,12 @@ vehicleButtons.forEach(btn => {
 
 optionCards.forEach(card => {
     card.addEventListener('click', () => {
+        const restrictionMessage = getRestrictionMessage(selectedVehicle, card.dataset.type);
+        if (restrictionMessage) {
+            alert(restrictionMessage);
+            return;
+        }
+
         optionCards.forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         selectedOption = card.dataset.type;
@@ -59,20 +91,17 @@ optionCards.forEach(card => {
 
 acceptButton.addEventListener('click', () => {
     if (selectedOption && selectedVehicle) {
-        if (selectedVehicle === 'Ciclos' && selectedOption.includes('interurbana')) {
-            alert('Els cicles només poden circular per carreteres urbanes o travessies.');
+        const restrictionMessage = getRestrictionMessage(selectedVehicle, selectedOption);
+        if (restrictionMessage) {
+            alert(restrictionMessage);
             return;
         }
-        if (selectedVehicle === 'Motocicleta' && selectedOption.includes('interurbana')) {
-            alert('Les motocicletes no poden circular per carreteres interurbanes.');
-            return;
-        }
-        // Guardar elecciones en localStorage
+
         localStorage.setItem('selectedVehicle', selectedVehicle);
         localStorage.setItem('selectedRoad', selectedOption);
         window.location.href = 'Juegos/' + selectedOption + '/' + selectedOption + '.html';
     } else {
-        alert('Por favor, selecciona una opción.');
+        alert('Por favor, selecciona una opcion.');
     }
 });
 

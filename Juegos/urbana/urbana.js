@@ -39,6 +39,10 @@ let minSpeed = 10;
 let maxSpeed = 180;
 let acceleration = 1;
 let speed = 40; // Velocidad inicial bajo el límite de urbana (50 km/h)
+const lowerVehicle = selectedVehicle.toLowerCase();
+if (lowerVehicle === 'vmp') {
+  maxSpeed = 45;
+}
 
 // Debuffs i estat
 let intox = 0;

@@ -3,106 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Joc educatiu sobre conducció responsable en travessies">
-  <title>PIXEL DRIVER: CIUTAT SEGURA</title>
+  <meta name="description" content="Joc educatiu sobre conduccio responsable en travessies">
+  <title>PIXEL DRIVER: PAS CONTROLAT</title>
   <link rel="stylesheet" href="travesia.css">
 </head>
-<body>
-  <main class="game-container" role="main" aria-label="Joc de Conducció Responsable - Mode Travessia">
-    <!-- ENCAPÇALAT -->
+<body class="travesia-page">
+  <main class="game-container" role="main" aria-label="Joc de conduccio responsable - mode travessia">
     <header class="game-header">
-      <p class="game-subtitle">Travessies</p>
-      <p class="game-description">Evita obstacles i manté el control del teu vehicle</p>
-      <details class="controls-info">
-        <summary class="summary-btn">📋 Controles</summary>
-        <div class="controls-content">
-          <table class="controls-table">
-            <tbody>
-              <tr>
-                <td><kbd>W A S D</kbd></td>
-                <td>Mou auto</td>
-              </tr>
-              <tr>
-                <td><kbd>↑ ↓</kbd></td>
-                <td>Ajusta velocitat</td>
-              </tr>
-              <tr>
-                <td><kbd>R</kbd></td>
-                <td>Resistent evento</td>
-              </tr>
-              <tr>
-                <td><kbd>Q</kbd></td>
-                <td>Accepta decisió</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </details>
+      <div class="header-copy">
+        <p class="header-kicker">Mode travessia</p>
+        <h1 class="game-title">PIXEL DRIVER: PAS CONTROLAT</h1>
+        <p class="game-subtitle">Travessies</p>
+        <p class="game-description">Redueix ritme, llegeix l'entorn i travessa la zona amb una conduccio molt mes fina i vigilant.</p>
+      </div>
+
+      <div class="header-side">
+        <section class="mission-card" aria-label="Objectiu de la partida">
+          <span class="mission-label">Objectiu</span>
+          <strong class="mission-title">Pas net en zona sensible</strong>
+          <p class="mission-text">Travessa l'entorn amb prudencia, sense brusquedats i mantenint el vehicle sota control en cada metre.</p>
+        </section>
+
+        <details class="controls-info">
+          <summary class="summary-btn">Veure controls</summary>
+          <div class="controls-content">
+            <table class="controls-table">
+              <tbody>
+                <tr>
+                  <td><kbd>W A S D</kbd></td>
+                  <td>Mou el vehicle</td>
+                </tr>
+                <tr>
+                  <td><kbd>↑ ↓</kbd></td>
+                  <td>Ajusta la velocitat</td>
+                </tr>
+                <tr>
+                  <td><kbd>R</kbd></td>
+                  <td>Resisteix l'esdeveniment</td>
+                </tr>
+                <tr>
+                  <td><kbd>Q</kbd></td>
+                  <td>Accepta la decisio</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
     </header>
 
-    <!-- VELOCITAT I CONTROLES (sota header) -->
-    <section class="top-controls">
+    <section class="top-controls" aria-label="Resum del trajecte">
       <div class="game-stats">
-        <p class="speed-display">
-          <span class="stat-label">Velocitat:</span>
-          <span id="speed" class="stat-value">60</span> km/h
-        </p>
-        <p class="distance-display">
-          <span class="stat-label">Distància:</span>
-          <span id="distance" class="stat-value">0</span> km
-        </p>
-        <p class="distance-display">
-          <span class="stat-label">Queden:</span>
-          <span id="distance-left" class="stat-value">2000</span> m
-        </p>
+        <article class="stat-card">
+          <span class="stat-label">Velocitat</span>
+          <strong><span id="speed" class="stat-value">60</span> <span class="stat-unit">km/h</span></strong>
+        </article>
+        <article class="stat-card">
+          <span class="stat-label">Distancia feta</span>
+          <strong><span id="distance" class="stat-value">0</span> <span class="stat-unit">km</span></strong>
+        </article>
+        <article class="stat-card stat-card-accent">
+          <span class="stat-label">Queden</span>
+          <strong><span id="distance-left" class="stat-value">2000</span> <span class="stat-unit">m</span></strong>
+        </article>
       </div>
     </section>
 
-    <!-- COS DEL JOC -->
     <section class="game-body">
       <aside class="game-info" role="region" aria-label="Indicadors del jugador">
         <section id="hud" class="game-hud" role="region" aria-label="Estat del jugador">
-          <div class="hud-item" aria-live="polite" aria-label="Nivell d'intoxicació">
-            <span class="hud-label">🍺 Intoxicació</span>
+          <div class="hud-item" aria-live="polite" aria-label="Nivell d'intoxicacio">
+            <span class="hud-label">Intoxicacio</span>
             <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
               <div id="alcohol" class="fill" aria-hidden="true"></div>
             </div>
             <span class="hud-value" id="alcohol-value">0%</span>
           </div>
-          <div class="hud-item" aria-live="polite" aria-label="Nivell de distracció">
-            <span class="hud-label">📱 Distracció</span>
+
+          <div class="hud-item" aria-live="polite" aria-label="Nivell de distraccio">
+            <span class="hud-label">Distraccio</span>
             <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
               <div id="distract" class="fill" aria-hidden="true"></div>
             </div>
             <span class="hud-value" id="distract-value">0%</span>
           </div>
-          <div class="hud-item" aria-live="polite" aria-label="Sancions acumulades">
-            <span class="hud-label">🚨 Sancions</span>
+
+          <div class="hud-item hud-item-penalties" aria-live="polite" aria-label="Sancions acumulades">
+            <span class="hud-label">Sancions</span>
             <span class="hud-value" id="penalties-value">0</span>
           </div>
+        </section>
+
+        <section class="info-card" aria-label="Consell tactica">
+          <span class="info-card-label">Tactica</span>
+          <p>En travessia no guanya qui corre mes, sino qui llegeix millor l'espai i mante una conduccio precisa en tot moment.</p>
         </section>
       </aside>
 
       <div class="game-play">
         <section class="game-events" role="region" aria-label="Esdeveniments del joc" aria-live="assertive">
+          <span class="events-label">Alerta en ruta</span>
           <div id="event" class="event-message"></div>
           <div id="eventPrompt" class="event-prompt"></div>
         </section>
 
-        <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Àrea de joc amb visualització de travessia"></canvas>
+        <section class="canvas-shell" aria-label="Zona central del joc">
+          <div class="canvas-topline">
+            <span class="road-chip">Travessia activa</span>
+            <span class="road-chip road-chip-muted">Limit recomanat: 50 km/h</span>
+          </div>
+          <canvas id="game" width="360" height="700" class="game-canvas" aria-label="Area de joc amb visualitzacio de travessia"></canvas>
+          <p class="canvas-caption">Mantingues el control, deixa marge davant teu i prioritza una trajectoria neta per sobre de qualsevol pressa.</p>
+        </section>
       </div>
 
-      <aside class="rule-panel" role="complementary" aria-label="Panell de regles de conducció">
-        <h2>Regles de la via</h2>
+      <aside class="rule-panel" role="complementary" aria-label="Panell de regles de conduccio">
+        <div class="rule-panel-header">
+          <p class="panel-kicker">Guia rapida</p>
+          <h2>Regles de la via</h2>
+        </div>
         <div id="roadRules" class="rule-list"></div>
         <h3>Regles del vehicle</h3>
         <div id="vehicleRules" class="rule-list"></div>
       </aside>
     </section>
 
-    <!-- Peu de pàgina -->
     <footer class="game-footer">
-      <p class="footer-text">Conducció responsable = Vida responsable</p>
+      <p class="footer-text">Conduccio responsable, pas mes segur.</p>
     </footer>
   </main>
 
