@@ -392,55 +392,52 @@ obstacles.push({
   });
 }
 
-  function updateObstacles() {
-    const safeDistance = 140;
-    const playerLane = Math.floor(car.x / laneWidth);
+function updateObstacles() {
+  const safeDistance = 140;
+  const playerLane = Math.floor(car.x / laneWidth);
 
-    for (let i = 0; i < obstacles.length; i++) {
-      const o = obstacles[i];
+  for (let i = 0; i < obstacles.length; i++) {
+    const o = obstacles[i];
+    let canMove = true;
 
-      let canMove = true;
+    // 1. Evitar al jugador
+    if (o.lane === playerLane) {
+      const distPlayer = Math.abs(o.y - car.y);
+      if (distPlayer < safeDistance) {
+        canMove = false;
+      }
+    }
 
-      // 1. Evitar al jugador
-      if (o.lane === playerLane) {
-        const distPlayer = Math.abs(o.y - car.y);
-        if (distPlayer < safeDistance) {
+    // 2. Evitar otros obstáculos
+    for (let j = 0; j < obstacles.length; j++) {
+      if (i === j) continue;
+
+      const other = obstacles[j];
+
+      if (o.lane === other.lane) {
+        const dist = o.y - other.y;
+
+        const sameDirection =
+          (o.speed > 0 && other.y > o.y) ||
+          (o.speed < 0 && other.y < o.y);
+
+        if (Math.abs(dist) < safeDistance && sameDirection) {
           canMove = false;
+          break;
         }
       }
+    }
 
-// 2. Evitar otros obstáculos (mejorado tipo tráfico real)
-for (let j = 0; j < obstacles.length; j++) {
-  if (i === j) continue;
-
-  const other = obstacles[j];
-
-  // Solo en el mismo carril
-  if (o.lane === other.lane) {
-    const dist = o.y - other.y;
-
-    // Detectar si hay otro vehículo delante en la misma dirección
-    const sameDirection =
-      (o.speed > 0 && other.y > o.y) ||
-      (o.speed < 0 && other.y < o.y);
-
-    // Si está demasiado cerca y hay riesgo de choque
-    if (Math.abs(dist) < safeDistance && sameDirection) {
-      canMove = false;
-      break;
+    // Movimiento normal si no hay bloqueo
+    if (canMove) {
+      const isLeftSide = o.lane < 2;
+      o.y += isLeftSide ? -o.speed * 2 : o.speed * 2;
     }
   }
+
+  obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
 }
 
-      // Movimiento normal si no hay bloqueo
-      if (canMove) {
-        const isLeftSide = o.lane < 2;
-        o.y += isLeftSide ? -o.speed * 2 : o.speed * 2;
-      }
-    }
-
-    obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
-  }
 
 function drawObstacles() {
   obstacles.forEach(o => {
@@ -453,9 +450,7 @@ function drawObstacles() {
         case 'turismo':
           color = "lightblue";
           break;
-        case 'autobus':
-          color = "lightyellow";
-          break;
+
         case 'vmp':
           color = "lightgoldenrodyellow";
           break;
