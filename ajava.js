@@ -35,6 +35,10 @@ function getRestrictionMessage(vehicle, roadType) {
         return 'Els VMP no poden circular per carreteres interurbanes.';
     }
 
+    if (vehicle === 'Ciclos') {
+        return 'Els cicles no poden circular per carreteres interurbanes.';
+    }
+
     return '';
 }
 
@@ -44,6 +48,7 @@ function updateRoadAvailability(vehicle) {
         const isDisabled = Boolean(restrictionMessage);
 
         card.dataset.disabled = isDisabled ? 'true' : 'false';
+        card.classList.toggle('disabled', isDisabled);
         card.style.opacity = isDisabled ? '0.45' : '1';
         card.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
         card.title = restrictionMessage;
@@ -77,9 +82,7 @@ vehicleButtons.forEach(btn => {
 
 optionCards.forEach(card => {
     card.addEventListener('click', () => {
-        const restrictionMessage = getRestrictionMessage(selectedVehicle, card.dataset.type);
-        if (restrictionMessage) {
-            alert(restrictionMessage);
+        if (card.dataset.disabled === 'true') {
             return;
         }
 

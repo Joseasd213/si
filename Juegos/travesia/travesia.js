@@ -29,9 +29,9 @@ function getVehicleImage(type) {
 
 const speedLimits = {
   urbana: 50,
-  interurbana: 90,
+  interurbana: 120,
   travesia: 60,
-  'turismo-interurbana': 90
+  'turismo-interurbana': 120
 };
 
 // Velocitat ambiental (controlada per fletxes amunt/avall)
