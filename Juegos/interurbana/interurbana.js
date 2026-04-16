@@ -13,6 +13,11 @@ if (selectedVehicle === 'VMP' && tipoCarretera.includes('interurbana')) {
   alert(message);
   window.location.href = '../../menu.html';
 }
+if (selectedVehicle === 'Ciclos' && tipoCarretera.includes('interurbana')) {
+  const message = 'Els Clices no poden circular per carreteres interurbanes. Escull Urbana o Travessia.';
+  alert(message);
+  window.location.href = '../../menu.html';
+}
 
 const vehicleTypes = ['Turismo', 'Autobus', 'VMP', 'Motocicleta', 'Ciclos', 'Camiones'];
 const vehicleImageMap = {
