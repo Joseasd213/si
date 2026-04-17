@@ -54,9 +54,9 @@ body::before {
 
 .game-container {
   position: relative;
-  width: min(1440px, 100%);
+  width: min(1040px, 100%);
   margin: 0 auto;
-  padding: 30px;
+  padding: 14px;
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background:
@@ -85,10 +85,10 @@ body::before {
 
 .game-header {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(320px, 0.95fr);
-  gap: 24px;
+  grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.82fr);
+  gap: 14px;
   align-items: stretch;
-  margin-bottom: 24px;
+  margin-bottom: 14px;
 }
 
 .header-copy,
@@ -108,7 +108,7 @@ body::before {
 }
 
 .header-copy {
-  padding: 24px 26px;
+  padding: 16px 18px;
   background:
     linear-gradient(140deg, rgba(110, 215, 255, 0.12), rgba(255, 180, 77, 0.08)),
     var(--panel-strong);
@@ -131,29 +131,29 @@ body::before {
 
 .game-title {
   font-family: "Gill Sans", "Trebuchet MS", sans-serif;
-  font-size: clamp(2.2rem, 3.8vw, 4rem);
+  font-size: clamp(1.7rem, 2.7vw, 2.9rem);
   line-height: 0.98;
   letter-spacing: 0.03em;
   color: #f6fbff;
 }
 
 .game-subtitle {
-  margin-top: 12px;
-  font-size: clamp(1.05rem, 2vw, 1.45rem);
+  margin-top: 10px;
+  font-size: clamp(0.88rem, 1.45vw, 1.08rem);
   color: #d7ebfb;
 }
 
 .game-description {
   max-width: 60ch;
-  margin-top: 14px;
+  margin-top: 10px;
   color: var(--muted);
-  font-size: 1.02rem;
-  line-height: 1.65;
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 .header-side {
   display: grid;
-  gap: 16px;
+  gap: 10px;
   border: none;
   background: transparent;
   backdrop-filter: none;
@@ -161,7 +161,7 @@ body::before {
 
 .mission-card,
 .controls-info {
-  padding: 18px 20px;
+  padding: 11px 13px;
 }
 
 .mission-card {
@@ -172,14 +172,15 @@ body::before {
 
 .mission-title {
   display: block;
-  margin-bottom: 8px;
-  font-size: 1.2rem;
+  margin-bottom: 6px;
+  font-size: 0.98rem;
   color: #fff3d8;
 }
 
 .mission-text {
   color: var(--muted);
-  line-height: 1.6;
+  font-size: 0.86rem;
+  line-height: 1.4;
 }
 
 .controls-info {
@@ -191,7 +192,7 @@ body::before {
   list-style: none;
   color: var(--text);
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 0.86rem;
 }
 
 .summary-btn::-webkit-details-marker {
@@ -210,7 +211,7 @@ body::before {
 }
 
 .controls-content {
-  padding-top: 14px;
+  padding-top: 8px;
 }
 
 .controls-table {
@@ -219,7 +220,7 @@ body::before {
 }
 
 .controls-table td {
-  padding: 10px 0;
+  padding: 6px 0;
   color: var(--muted);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -235,19 +236,19 @@ body::before {
 
 .controls-table kbd {
   display: inline-block;
-  min-width: 82px;
-  padding: 6px 10px;
+  min-width: 66px;
+  padding: 4px 8px;
   border-radius: 999px;
   background: rgba(110, 215, 255, 0.12);
   border: 1px solid rgba(110, 215, 255, 0.2);
   font-family: "Consolas", "Courier New", monospace;
-  font-size: 0.92rem;
+  font-size: 0.78rem;
   color: #cbf1ff;
 }
 
 .top-controls {
-  padding: 16px;
-  margin-bottom: 24px;
+  padding: 11px;
+  margin-bottom: 14px;
   border: 1px solid var(--line);
   border-radius: calc(var(--radius-md) + 2px);
   background:
@@ -258,14 +259,14 @@ body::before {
 .game-stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  gap: 10px;
 }
 
 .stat-card {
-  padding: 18px 20px;
+  padding: 11px 12px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
 }
 
 .stat-card-accent {
@@ -275,14 +276,14 @@ body::before {
 }
 
 .stat-label {
-  font-size: 0.84rem;
+  font-size: 0.72rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--muted);
 }
 
 .stat-card strong {
-  font-size: clamp(1.5rem, 2.7vw, 2.3rem);
+  font-size: clamp(1.12rem, 1.9vw, 1.65rem);
   color: var(--text);
 }
 
@@ -291,36 +292,36 @@ body::before {
 }
 
 .stat-unit {
-  font-size: 0.95rem;
+  font-size: 0.78rem;
   color: var(--accent);
 }
 
 .game-body {
   display: grid;
-  grid-template-columns: minmax(240px, 290px) minmax(320px, 1fr) minmax(260px, 330px);
-  gap: 22px;
+  grid-template-columns: minmax(190px, 230px) minmax(330px, 1fr) minmax(210px, 250px);
+  gap: 14px;
   align-items: start;
 }
 
 .game-info,
 .game-play {
   display: grid;
-  gap: 18px;
+  gap: 10px;
 }
 
 .game-hud {
   display: grid;
-  gap: 14px;
+  gap: 10px;
 }
 
 .hud-item {
-  padding: 16px;
+  padding: 11px;
 }
 
 .hud-label {
   display: block;
-  margin-bottom: 12px;
-  font-size: 0.92rem;
+  margin-bottom: 8px;
+  font-size: 0.76rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--muted);
@@ -328,7 +329,7 @@ body::before {
 
 .bar {
   width: 100%;
-  height: 16px;
+  height: 12px;
   border-radius: 999px;
   overflow: hidden;
   background: rgba(255, 255, 255, 0.07);
@@ -352,8 +353,8 @@ body::before {
 
 .hud-value {
   display: inline-block;
-  margin-top: 12px;
-  font-size: 1.65rem;
+  margin-top: 8px;
+  font-size: 1.2rem;
   font-weight: 700;
   color: #fff;
 }
@@ -365,19 +366,20 @@ body::before {
 }
 
 .hud-item-penalties .hud-value {
-  font-size: 2.3rem;
+  font-size: 1.7rem;
   color: #ffd5d5;
 }
 
 .info-card {
-  padding: 18px;
-  line-height: 1.65;
+  padding: 12px;
+  font-size: 0.84rem;
+  line-height: 1.45;
   color: var(--muted);
 }
 
 .game-events {
-  padding: 16px 18px;
-  min-height: 120px;
+  padding: 11px 13px;
+  min-height: 92px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -385,19 +387,22 @@ body::before {
 
 .event-message {
   min-height: 32px;
-  font-size: 1.2rem;
+  font-size: 0.94rem;
   color: #fef7ea;
 }
 
 .event-prompt {
   min-height: 24px;
-  margin-top: 8px;
+  margin-top: 6px;
   color: var(--muted);
+  font-size: 0.82rem;
 }
 
 .canvas-shell {
   position: relative;
-  padding: 18px;
+  max-width: 370px;
+  margin: 0 auto;
+  padding: 10px;
   background:
     linear-gradient(180deg, rgba(110, 215, 255, 0.08), rgba(255, 255, 255, 0.02)),
     var(--panel-strong);
@@ -406,20 +411,20 @@ body::before {
 .canvas-topline {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 8px;
 }
 
 .road-chip {
   display: inline-flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 5px 8px;
   border-radius: 999px;
   background: rgba(110, 215, 255, 0.12);
   border: 1px solid rgba(110, 215, 255, 0.22);
   color: #d7f4ff;
-  font-size: 0.82rem;
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -432,10 +437,10 @@ body::before {
 
 .game-canvas {
   display: block;
-  width: min(100%, 420px);
+  width: min(100%, 340px);
   margin: 0 auto;
   height: auto;
-  border-radius: 24px;
+  border-radius: 20px;
   border: 2px solid rgba(110, 215, 255, 0.35);
   background: #0f1722;
   box-shadow:
@@ -445,21 +450,22 @@ body::before {
 
 .canvas-caption {
   max-width: 44ch;
-  margin: 14px auto 0;
+  margin: 10px auto 0;
   text-align: center;
   color: var(--muted);
-  line-height: 1.6;
+  font-size: 0.82rem;
+  line-height: 1.4;
 }
 
 .rule-panel {
-  padding: 20px;
+  padding: 13px;
   background:
     linear-gradient(180deg, rgba(99, 230, 190, 0.06), rgba(255, 255, 255, 0.02)),
     var(--panel);
 }
 
 .rule-panel-header {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .rule-panel h2,
@@ -468,26 +474,27 @@ body::before {
 }
 
 .rule-panel h3 {
-  margin: 18px 0 12px;
+  margin: 12px 0 8px;
 }
 
 .rule-list {
   display: grid;
-  gap: 12px;
+  gap: 8px;
 }
 
 .rule-entry {
-  padding: 14px 15px;
+  padding: 10px 11px;
   border-radius: var(--radius-sm);
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(255, 255, 255, 0.04);
   color: var(--muted);
-  line-height: 1.55;
+  font-size: 0.84rem;
+  line-height: 1.35;
 }
 
 .game-footer {
-  margin-top: 24px;
-  padding-top: 18px;
+  margin-top: 14px;
+  padding-top: 10px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -526,7 +533,7 @@ body::before {
 
   .game-canvas {
     width: 100%;
-    max-width: 420px;
+    max-width: 340px;
   }
 }
 

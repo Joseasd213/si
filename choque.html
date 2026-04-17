@@ -76,7 +76,7 @@
       Tu navegador no soporta video.
     </video>
   </div>
-  <div id="final-text">Te chocastes</div>
+  <div id="final-text">t'has xocat</div>
 
   <script>
   const video = document.querySelector("video");
@@ -93,6 +93,13 @@
     videoFile = 'videos-finales/choque-moto.mp4';
   } else if (vehicle.toLowerCase() === 'vmp') {
     videoFile = 'videos-finales/choque-vmp.mp4';
+  }
+  else if (vehicle.toLowerCase() === 'ciclos') {
+    videoFile = 'videos-finales/choque-bicicleta.mp4';
+  }
+
+    else if (vehicle.toLowerCase() === 'camiones') {
+    videoFile = 'videos-finales/choque-camion.mp4';
   }
 
   videoSource.src = videoFile;

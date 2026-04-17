@@ -50,6 +50,10 @@ let minSpeed = 10;
 let maxSpeed = 180;
 let acceleration = 1;
 let speed = 80; // Velocidad inicial bajo el límite de interurbana (90 km/h)
+const lowerVehicle = selectedVehicle.toLowerCase();
+if (lowerVehicle === 'vmp' || lowerVehicle === 'ciclos') {
+  maxSpeed = 45;
+}
 
 // Debuffs i estat
 let intox = 0;
@@ -75,10 +79,10 @@ const rapidLaneChangeWindowMs = 1200;
 
 // Cotxe - Apareix a la dreta o esquerra
 const car = {
-  x: (Math.random() < 0.5 ? 0 : 3) * laneWidth + (laneWidth - 30) / 2,
-  y: canvas.height - 120,
-  w: 30,
-  h: 50,
+  x: (Math.random() < 0.5 ? 0 : 3) * laneWidth + (laneWidth - 40) / 2,
+  y: canvas.height - 130,
+  w: 40,
+  h: 60,
   speedX: 0,
   speedY: 0
 };
@@ -251,8 +255,7 @@ function navigateOnCrash() {
   if (redirectScheduled) return;
   redirectScheduled = true;
   let target = '../../choque.html';
-  if (gameOverReason === 'alcohol') target = `../../alchol.html?vehicle=${encodeURIComponent(selectedVehicle)}`;
-  else if (gameOverReason === 'infraccion') target = '../../infraccion.html';
+  if (gameOverReason === 'infraccion') target = '../../infraccion.html';
   else target = `../../choque.html?vehicle=${encodeURIComponent(selectedVehicle)}`;
   setTimeout(() => { window.location.href = target; }, 1400);
 }
@@ -638,11 +641,11 @@ function getObstacleMoveAmount(obstacle, blockerAhead) {
   return Math.min(desiredSpeed, currentSpeed + (obstacle.accelerationStep ?? 0.08));
 }
 
-function isSafeDistance(lane, y, height = 50) {
+function isSafeDistance(lane, y, height = 60) {
   const candidate = {
-    x: getLaneX(lane, 30),
+    x: getLaneX(lane, 40),
     y: y,
-    w: 30,
+    w: 40,
     h: height,
     lane: lane,
     direction: lane < 2 ? -1 : 1
@@ -669,8 +672,8 @@ function isSafeDistance(lane, y, height = 50) {
 }
 
 function spawnObstacle() {
-  const ow = 30;
-  const oh = 50;
+  const ow = 40;
+  const oh = 60;
 
   let lane = Math.floor(Math.random() * laneCount);
   const playerLane = getPlayerLane();
