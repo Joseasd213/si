@@ -67,6 +67,27 @@
       opacity: 1;
     }
 
+    #final-reason {
+      position: fixed;
+      left: 50%;
+      top: 62%;
+      transform: translateX(-50%);
+      width: 90%;
+      max-width: 900px;
+      text-align: center;
+      color: #dddddd;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      z-index: 11;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    #final-reason.show {
+      opacity: 1;
+    }
+
     #go-home-btn {
       position: fixed;
       left: 50%;
@@ -98,15 +119,36 @@
     </video>
   </div>
   <div id="final-text">Vas cometre massa sancions</div>
+  <div id="final-reason"></div>
   <button id="go-home-btn" onclick="window.location.href='index.html'">Tornar a l'inici</button>
 
   <script>
   const video = document.querySelector("video");
   const finalText = document.getElementById("final-text");
+  const finalReason = document.getElementById("final-reason");
   const goHomeBtn = document.getElementById("go-home-btn");
+  const params = new URLSearchParams(window.location.search);
+  const reason = params.get('reason');
+  const road = params.get('road');
+
+  function roadLabel(value) {
+    if (!value) return "";
+    if (value === "urbana") return "urbana";
+    if (value === "interurbana") return "interurbana";
+    if (value === "travesia") return "travessia";
+    return value;
+  }
+
+  if (reason) {
+    const roadText = roadLabel(road);
+    finalReason.textContent = roadText ? `${reason} (Via ${roadText})` : reason;
+  } else {
+    finalReason.textContent = "Has superat el limit de sancions establert en aquesta partida.";
+  }
 
   video.addEventListener("ended", () => {
     finalText.classList.add("show");
+    finalReason.classList.add("show");
     goHomeBtn.classList.add("show");
   });
   </script>

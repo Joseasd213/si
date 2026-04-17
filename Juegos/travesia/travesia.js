@@ -57,7 +57,7 @@ let gameOver = false;
 let gameStartTime = Date.now();
 let lastFrameTime = Date.now();
 let distanceKm = 0;
-const distanceGoalKm = 2;
+const distanceGoalKm = 1;
 
 // Seguiment dels canvis de carril per detectar infraccions
 let lastCarLane = -1;
@@ -191,11 +191,16 @@ const vehicleRuleSets = {
 };
 
 let gameOverReason = null;
+let gameOverDetail = '';
 let redirectScheduled = false;
 
 function setGameOverReason(reason) {
   if (gameOverReason === 'alcohol') return;
   gameOverReason = reason;
+}
+
+function setGameOverDetail(detail) {
+  gameOverDetail = detail;
 }
 
 function renderRules() {
@@ -245,9 +250,12 @@ function renderPageHeader() {
 function navigateOnCrash() {
   if (redirectScheduled) return;
   redirectScheduled = true;
-  let target = '../../choque.html';
-  if (gameOverReason === 'infraccion') target = '../../infraccion.html';
-  else target = `../../choque.html?vehicle=${encodeURIComponent(selectedVehicle)}`;
+  const params = new URLSearchParams();
+  params.set('vehicle', selectedVehicle);
+  if (gameOverDetail) params.set('reason', gameOverDetail);
+  params.set('road', tipoCarretera);
+  let target = `../../choque.html?${params.toString()}`;
+  if (gameOverReason === 'infraccion') target = `../../infraccion.html?${params.toString()}`;
   setTimeout(() => { window.location.href = target; }, 1400);
 }
 
@@ -841,6 +849,7 @@ function checkRuleViolations() {
 
   if (penalties >= 12 && !gameOver) {
     gameOver = true;
+    setGameOverDetail("Has acumulat massa sancions durant la conduccio.");
     setGameOverReason('infraccion');
   }
 }
@@ -880,6 +889,8 @@ function collision() {
       car.y + car.h > o.y
     ) {
       gameOver = true;
+      setGameOverDetail("Has col·lisionat amb un altre vehicle.");
+      setGameOverReason('choque');
       break;
     }
   }
@@ -892,6 +903,7 @@ function collision() {
     car.y + car.h > wall.y
   ) {
     gameOver = true;
+    setGameOverDetail("Has xocat amb un obstacle lateral.");
     setGameOverReason('choque');
   }
 }
@@ -910,11 +922,13 @@ function applyDebuffs() {
 
   if (intox >= 100) {
     gameOver = true;
+    setGameOverDetail("Conduccio impossible per consum d'alcohol.");
     setGameOverReason('alcohol');
   }
 
   if (distract >= 100 && gameOverReason !== 'alcohol') {
     gameOver = true;
+    setGameOverDetail("La distraccio ha provocat un accident.");
     setGameOverReason('choque');
   }
 }
@@ -1120,6 +1134,7 @@ function loop() {
   if (distanceKm >= distanceGoalKm && !gameOver) {
     gameOver = true;
     if (penalties > 0) {
+      setGameOverDetail("Has arribat al final, pero amb sancions pendents.");
       setGameOverReason('infraccion');
     } else {
       setGameOverReason('goal');
