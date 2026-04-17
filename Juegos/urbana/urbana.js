@@ -95,6 +95,13 @@ const obstacleLaneChangeClearance = 130;
 const obstacleMinSpeedAdvantage = 0.35;
 const obstacleMinLaneHoldMs = 450;
 const obstacleSpeedVariance = 0.45;
+const obstacleMinSafetyDistance = 75;
+const obstacleMaxSafetyDistance = 180;
+const obstacleSafetySpeedFactor = 16;
+const obstacleRelativeSafetyFactor = 28;
+const obstacleLookAheadBuffer = 80;
+const obstacleReturnLaneDelayMs = 800;
+const obstacleSpawnClearance = 170;
 let nextObstacleId = 1;
 
 // Obstacles
@@ -350,29 +357,98 @@ function occupiesLane(entity, lane) {
   return entity.lane === lane || (entity.changingLane && entity.previousLane === lane);
 }
 
-function getForwardDistance(originY, targetY, direction) {
-  return direction === -1 ? originY - targetY : targetY - originY;
-}
-
 function getObstacleTrafficSpeed(obstacle) {
   return obstacle.speed * obstacleForwardFactor;
+}
+
+function getObstacleCruiseSpeed(obstacle) {
+  return obstacle.cruiseTrafficSpeed ?? getObstacleTrafficSpeed(obstacle);
+}
+
+function getPlayerTrafficSpeed(direction) {
+  const projectedSpeed = direction === -1 ? -car.speedY : car.speedY;
+  return Math.max(0, projectedSpeed);
+}
+
+function getSignedClearDistance(origin, target, direction) {
+  if (direction === -1) {
+    const aheadGap = origin.y - (target.y + target.h);
+    if (aheadGap >= 0) return aheadGap;
+
+    const behindGap = target.y - (origin.y + origin.h);
+    if (behindGap >= 0) return -behindGap;
+
+    return 0;
+  }
+
+  const aheadGap = target.y - (origin.y + origin.h);
+  if (aheadGap >= 0) return aheadGap;
+
+  const behindGap = origin.y - (target.y + target.h);
+  if (behindGap >= 0) return -behindGap;
+
+  return 0;
+}
+
+// Retorna true si l'obstacle queda visualment per davant del jugador.
+function isObstacleAheadOfPlayer(obstacle) {
+  const obstacleCenterY = obstacle.y + obstacle.h / 2;
+  const playerCenterY = car.y + car.h / 2;
+  return obstacleCenterY < playerCenterY;
+}
+
+function getObstacleSafetyDistance(obstacle, blockerSpeed = 0) {
+  const cruiseSpeed = getObstacleCruiseSpeed(obstacle);
+  const baseGap = 65 + cruiseSpeed * obstacleSafetySpeedFactor;
+  const closingGap = Math.max(0, cruiseSpeed - blockerSpeed) * obstacleRelativeSafetyFactor;
+  return Math.max(
+    obstacleMinSafetyDistance,
+    Math.min(obstacleMaxSafetyDistance, baseGap + closingGap)
+  );
+}
+
+function getObstacleLookAheadDistanceFor(obstacle, blockerSpeed = 0) {
+  return Math.max(
+    obstacleLookAheadDistance,
+    getObstacleSafetyDistance(obstacle, blockerSpeed) + obstacleLookAheadBuffer
+  );
+}
+
+function getObstacleLaneChangeClearances(obstacle, blockerSpeed = 0) {
+  const safetyDistance = getObstacleSafetyDistance(obstacle, blockerSpeed);
+  return {
+    front: Math.max(obstacleLaneChangeClearance, safetyDistance + 20),
+    rear: Math.max(obstacleLaneChangeClearance - 10, Math.round(safetyDistance * 0.8))
+  };
 }
 
 function getNearestAheadEntity(obstacle, lane = obstacle.lane) {
   const direction = obstacle.direction;
   let closest = null;
+  const playerLane = getPlayerLane();
+
+  if (playerLane === lane) {
+    const playerDistance = getSignedClearDistance(obstacle, car, direction);
+    if (playerDistance > 0) {
+      closest = {
+        kind: 'player',
+        distance: playerDistance,
+        speed: getPlayerTrafficSpeed(direction)
+      };
+    }
+  }
 
   obstacles.forEach(other => {
     if (other === obstacle || !occupiesLane(other, lane)) return;
 
-    const distance = getForwardDistance(obstacle.y, other.y, direction);
+    const distance = getSignedClearDistance(obstacle, other, direction);
     if (distance <= 0) return;
 
     if (!closest || distance < closest.distance) {
       closest = {
         kind: 'obstacle',
         distance: distance,
-        speed: other.currentTrafficSpeed ?? getObstacleTrafficSpeed(other),
+        speed: other.currentTrafficSpeed ?? getObstacleCruiseSpeed(other),
         obstacle: other
       };
     }
@@ -391,14 +467,14 @@ function isLaneClearForChange(
 
   const playerLane = getPlayerLane();
   if (playerLane === targetLane) {
-    const playerDistance = getForwardDistance(obstacle.y, car.y, obstacle.direction);
+    const playerDistance = getSignedClearDistance(obstacle, car, obstacle.direction);
     if (playerDistance >= 0 && playerDistance < frontClearance) return false;
     if (playerDistance < 0 && Math.abs(playerDistance) < rearClearance) return false;
   }
 
   for (const other of obstacles) {
     if (other === obstacle || !occupiesLane(other, targetLane)) continue;
-    const distance = getForwardDistance(obstacle.y, other.y, obstacle.direction);
+    const distance = getSignedClearDistance(obstacle, other, obstacle.direction);
     if (distance >= 0 && distance < frontClearance) return false;
     if (distance < 0 && Math.abs(distance) < rearClearance) return false;
   }
@@ -414,8 +490,15 @@ function setObstacleLaneChange(obstacle, targetLane) {
   obstacle.lastLaneChangeAt = Date.now();
 }
 
+function stopObstacleLaneChange(obstacle) {
+  obstacle.x = getLaneX(obstacle.lane, obstacle.w);
+  obstacle.targetX = obstacle.x;
+  obstacle.changingLane = false;
+  obstacle.previousLane = null;
+}
+
 function canRearVehicleOvertake(obstacle, blockerAhead) {
-  if (obstacle.changingLane || !blockerAhead) {
+  if (obstacle.changingLane || !blockerAhead || obstacle.lane !== obstacle.preferredLane) {
     return false;
   }
 
@@ -423,32 +506,81 @@ function canRearVehicleOvertake(obstacle, blockerAhead) {
     return false;
   }
 
-  const ownSpeed = getObstacleTrafficSpeed(obstacle);
-  const isCloseEnough = blockerAhead.distance <= obstacleOvertakeTriggerDistance;
+  // ── NOU: només pot avançar si l'obstacle està DARRERE del jugador ────────
+  if (isObstacleAheadOfPlayer(obstacle)) {
+    return false;
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
+  const ownSpeed = getObstacleCruiseSpeed(obstacle);
+  const lookAheadDistance = getObstacleLookAheadDistanceFor(obstacle, blockerAhead.speed);
+  const safetyDistance = getObstacleSafetyDistance(obstacle, blockerAhead.speed);
+  const triggerDistance = Math.min(
+    lookAheadDistance - 25,
+    Math.max(obstacleOvertakeTriggerDistance, safetyDistance + 35)
+  );
+  const isCloseEnough = blockerAhead.distance <= triggerDistance;
   const isAheadVehicleSlower = ownSpeed > blockerAhead.speed + obstacleMinSpeedAdvantage;
 
   return isCloseEnough && isAheadVehicleSlower;
 }
 
 function tryStartOvertake(obstacle, blockerAhead) {
-  // Solo adelanta el vehiculo que va detras y alcanza a otro mas lento delante.
-  // El vehiculo delantero no "cede" el carril automaticamente.
   if (!canRearVehicleOvertake(obstacle, blockerAhead)) {
-    return false;
-  }
-
-  if (blockerAhead.distance > obstacleLookAheadDistance) {
     return false;
   }
 
   const currentLane = obstacle.lane;
   const targetLane = getAdjacentLane(currentLane);
-  if (!isLaneClearForChange(obstacle, targetLane)) {
+  const clearances = getObstacleLaneChangeClearances(obstacle, blockerAhead.speed);
+
+  if (!isLaneClearForChange(obstacle, targetLane, clearances.front, clearances.rear)) {
     return false;
   }
 
   setObstacleLaneChange(obstacle, targetLane);
 
+  return true;
+}
+
+function shouldReturnToPreferredLane(obstacle) {
+  if (obstacle.changingLane || obstacle.lane === obstacle.preferredLane) {
+    return false;
+  }
+
+  if (Date.now() - obstacle.lastLaneChangeAt < obstacleReturnLaneDelayMs) {
+    return false;
+  }
+
+  // ── NOU: només pot tornar al carril preferit si està DARRERE del jugador ─
+  if (isObstacleAheadOfPlayer(obstacle)) {
+    return false;
+  }
+  // ────────────────────────────────────────────────────────────────────────
+
+  const blockerOnPreferredLane = getNearestAheadEntity(obstacle, obstacle.preferredLane);
+  if (blockerOnPreferredLane) {
+    const safetyDistance = getObstacleSafetyDistance(obstacle, blockerOnPreferredLane.speed);
+    if (blockerOnPreferredLane.distance < safetyDistance + 20) {
+      return false;
+    }
+  }
+
+  const clearances = getObstacleLaneChangeClearances(obstacle);
+  return isLaneClearForChange(
+    obstacle,
+    obstacle.preferredLane,
+    clearances.front,
+    clearances.rear
+  );
+}
+
+function tryReturnToPreferredLane(obstacle) {
+  if (!shouldReturnToPreferredLane(obstacle)) {
+    return false;
+  }
+
+  setObstacleLaneChange(obstacle, obstacle.preferredLane);
   return true;
 }
 
@@ -470,58 +602,88 @@ function updateObstacleLanePosition(obstacle) {
 }
 
 function getObstacleMoveAmount(obstacle, blockerAhead) {
-  const ownSpeed = getObstacleTrafficSpeed(obstacle);
+  const ownSpeed = getObstacleCruiseSpeed(obstacle);
+  const currentSpeed = obstacle.currentTrafficSpeed ?? ownSpeed;
 
   if (!blockerAhead) {
-    return ownSpeed;
+    return Math.min(ownSpeed, currentSpeed + (obstacle.accelerationStep ?? 0.08));
   }
 
   const blockerSpeed = Math.max(0, blockerAhead.speed);
+  const safeDistance = getObstacleSafetyDistance(obstacle, blockerSpeed);
+  const lookAheadDistance = getObstacleLookAheadDistanceFor(obstacle, blockerSpeed);
+  const maxSafeSpeed = Math.max(0, blockerSpeed + blockerAhead.distance - safeDistance);
 
-  if (blockerAhead.distance <= obstacleFollowDistance) {
-    return blockerSpeed;
+  let desiredSpeed;
+
+  if (blockerAhead.distance <= 0) {
+    desiredSpeed = 0;
+  } else if (blockerAhead.distance <= safeDistance) {
+    desiredSpeed = maxSafeSpeed;
+  } else if (blockerAhead.distance >= lookAheadDistance) {
+    desiredSpeed = ownSpeed;
+  } else {
+    const ratio = (blockerAhead.distance - safeDistance) /
+      (lookAheadDistance - safeDistance);
+
+    desiredSpeed = blockerSpeed + (ownSpeed - blockerSpeed) * ratio;
   }
 
-  if (blockerAhead.distance >= obstacleLookAheadDistance) {
-    return ownSpeed;
+  desiredSpeed = Math.max(0, Math.min(ownSpeed, maxSafeSpeed, desiredSpeed));
+
+  if (desiredSpeed < currentSpeed) {
+    return desiredSpeed;
   }
 
-  const ratio = (blockerAhead.distance - obstacleFollowDistance) /
-    (obstacleLookAheadDistance - obstacleFollowDistance);
-
-  return blockerSpeed + (ownSpeed - blockerSpeed) * ratio;
+  return Math.min(desiredSpeed, currentSpeed + (obstacle.accelerationStep ?? 0.08));
 }
 
-function isSafeDistance(lane, y) {
+function isSafeDistance(lane, y, height = 50) {
+  const candidate = {
+    x: getLaneX(lane, 30),
+    y: y,
+    w: 30,
+    h: height,
+    lane: lane,
+    direction: lane < 2 ? -1 : 1
+  };
   const playerLane = getPlayerLane();
 
-  if (lane !== playerLane) return true;
+  if (lane === playerLane) {
+    const playerDistance = Math.abs(getSignedClearDistance(candidate, car, candidate.direction));
+    if (playerDistance < obstacleSpawnClearance) {
+      return false;
+    }
+  }
 
-  const safeDistance = 150;
-  const distance = Math.abs(car.y - y);
+  for (const other of obstacles) {
+    if (!occupiesLane(other, lane)) continue;
 
-  return distance > safeDistance;
+    const distance = Math.abs(getSignedClearDistance(candidate, other, candidate.direction));
+    if (distance < obstacleSpawnClearance) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 function spawnObstacle() {
   const ow = 30;
   const oh = 50;
 
-  // Elegir carril (0 a 3), con chance de aparecer en el carril del jugador
+  // Elegir carril (0 a 3), amb chance d'aparèixer al carril del jugador
   let lane = Math.floor(Math.random() * laneCount);
   const playerLane = getPlayerLane();
-  if (Math.random() < 0.2) { // 20% de chance
+  if (Math.random() < 0.2) {
     lane = playerLane;
   }
 
-  // Centrar obstacle en el carril
   const x = getLaneX(lane, ow);
 
-  // Velocitat individual de l'obstacle
   let type = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
 
   let baseObstacleSpeed;
-
   switch(type.toLowerCase()) {
     case 'camiones':
       baseObstacleSpeed = 1.2;
@@ -539,7 +701,6 @@ function spawnObstacle() {
     default:
       baseObstacleSpeed = 2;
   }
-  // Determinar posición inicial según el lado
   baseObstacleSpeed *= 0.85 + Math.random() * obstacleSpeedVariance;
 
   let y;
@@ -548,31 +709,33 @@ function spawnObstacle() {
 
   do {
     const isLeftSide = lane < 2;
-
     y = isLeftSide
       ? canvas.height + oh + Math.random() * 200
       : -oh - Math.random() * 200;
-
     attempts++;
+  } while (!isSafeDistance(lane, y, oh) && attempts < maxAttempts);
 
-  } while (!isSafeDistance(lane, y) && attempts < maxAttempts);
+  const cruiseTrafficSpeed = getObstacleTrafficSpeed({ speed: baseObstacleSpeed });
 
-obstacles.push({
-  id: nextObstacleId++,
-  x: x,
-  y: y,
-  w: ow,
-  h: oh,
-  lane: lane,
-  direction: lane < 2 ? -1 : 1,
-  speed: baseObstacleSpeed,
-  type: type,
-  currentTrafficSpeed: getObstacleTrafficSpeed({ speed: baseObstacleSpeed }),
-  previousLane: null,
-  targetX: x,
-  changingLane: false,
-  laneChangeSpeed: 2 + Math.random() * 0.8,
-  lastLaneChangeAt: 0
+  obstacles.push({
+    id: nextObstacleId++,
+    x: x,
+    y: y,
+    w: ow,
+    h: oh,
+    lane: lane,
+    direction: lane < 2 ? -1 : 1,
+    speed: baseObstacleSpeed,
+    type: type,
+    cruiseTrafficSpeed: cruiseTrafficSpeed,
+    currentTrafficSpeed: cruiseTrafficSpeed,
+    previousLane: null,
+    preferredLane: lane,
+    targetX: x,
+    changingLane: false,
+    laneChangeSpeed: 2 + Math.random() * 0.8,
+    accelerationStep: 0.06 + Math.random() * 0.05,
+    lastLaneChangeAt: Date.now()
   });
 }
 
@@ -581,15 +744,28 @@ function updateObstacles() {
     if (a.direction !== b.direction) {
       return a.direction - b.direction;
     }
-
     return a.direction === -1 ? a.y - b.y : b.y - a.y;
   });
 
   for (const o of orderedObstacles) {
+    const obstacleAheadOfPlayer = isObstacleAheadOfPlayer(o);
+    if (obstacleAheadOfPlayer && o.changingLane) {
+      stopObstacleLaneChange(o);
+    }
 
-    const blockerAhead = getNearestAheadEntity(o);
-    const startedOvertake = tryStartOvertake(o, blockerAhead);
-    const activeBlocker = startedOvertake ? getNearestAheadEntity(o) : blockerAhead;
+    if (!obstacleAheadOfPlayer) {
+      tryReturnToPreferredLane(o);
+    }
+
+    let blockerAhead = getNearestAheadEntity(o);
+    if (!obstacleAheadOfPlayer) {
+      const startedOvertake = tryStartOvertake(o, blockerAhead);
+      if (startedOvertake) {
+        blockerAhead = getNearestAheadEntity(o);
+      }
+    }
+
+    const activeBlocker = blockerAhead;
     const moveAmount = getObstacleMoveAmount(o, activeBlocker);
     o.currentTrafficSpeed = moveAmount;
 
@@ -597,12 +773,10 @@ function updateObstacles() {
       o.y += o.direction * moveAmount;
     }
     updateObstacleLanePosition(o);
-
   }
 
   obstacles = obstacles.filter(o => o.y < canvas.height + 100 && o.y > -200);
 }
-
 
 function drawObstacles() {
   obstacles.forEach(o => {
@@ -615,7 +789,6 @@ function drawObstacles() {
         case 'turismo':
           color = "lightblue";
           break;
-
         case 'vmp':
           color = "lightgoldenrodyellow";
           break;
@@ -654,7 +827,7 @@ function checkRuleViolations() {
   } else if (currentLane !== lastCarLane) {
     if (lastLaneChangeTime && now - lastLaneChangeTime < rapidLaneChangeWindowMs) {
       penalties += 1;
-      console.log(`⚠️ Sanción #${penalties}: Cambio brusco de carril`);
+      console.log(`⚠️ Sanció #${penalties}: Canvi brusc de carril`);
     }
 
     lastLaneChangeTime = now;
@@ -664,21 +837,19 @@ function checkRuleViolations() {
   const speedLimit = speedLimits[tipoCarretera] || 90;
   if (speed > speedLimit && !wasOverSpeed) {
     penalties += 1;
-    console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
-      wasOverSpeed = true;
-    } else if (speed <= speedLimit) {
-      wasOverSpeed = false;
-    }
-
-    // ✅ AQUÍ VA (IMPORTANTE)
-    if (penalties >= 12 && !gameOver) {
-      gameOver = true;
-      setGameOverReason('infraccion');
-    }
+    console.log(`🚨 Sanció #${penalties}: Excés de velocitat (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
+    wasOverSpeed = true;
+  } else if (speed <= speedLimit) {
+    wasOverSpeed = false;
   }
 
+  if (penalties >= 12 && !gameOver) {
+    gameOver = true;
+    setGameOverReason('infraccion');
+  }
+}
+
 function collision() {
-  // Colisió amb obstacles
   for (let o of obstacles) {
     if (
       car.x < o.x + o.w &&
@@ -691,7 +862,6 @@ function collision() {
     }
   }
 
-  // Colisió amb mur
   if (
     car.x < wall.x + wall.w &&
     car.x + car.w > wall.x &&
@@ -718,15 +888,12 @@ function checkNearMiss() {
     const key = `${index}`;
 
     if (closeEnough) {
-      // Solo sanciona si no estaba ya en estado cercano
       if (!nearMissCooldown.has(key)) {
         penalties += 1;
         nearMissCooldown.add(key);
-
-        console.log("⚠️ Near miss voluntario +1 sanción. Total:", penalties);
+        console.log("⚠️ Near miss voluntari +1 sanció. Total:", penalties);
       }
     } else {
-      // cuando se aleja, permite volver a sancionar si repite
       nearMissCooldown.delete(key);
     }
   });
@@ -737,7 +904,7 @@ function updateBars() {
   document.getElementById("alcohol-value").textContent = intox + "%";
   document.getElementById("distract").style.width = distract + "%";
   document.getElementById("distract-value").textContent = distract + "%";
-  document.getElementById("penalties-value").textContent = penalties; // Mostrar número de sanciones
+  document.getElementById("penalties-value").textContent = penalties;
 }
 
 function applyDebuffs() {
@@ -754,7 +921,6 @@ function applyDebuffs() {
     setGameOverReason('choque');
   }
 }
-
 
 function randomEvent() {
   const e = events[Math.floor(Math.random() * events.length)];
@@ -909,7 +1075,6 @@ function loop() {
   car.x += car.speedX;
   car.y += car.speedY;
 
-  // Mantenir el cotxe dins dels límits (fixat)
   if (car.x < 0) car.x = 0;
   if (car.x + car.w > canvas.width) car.x = canvas.width - car.w;
   if (car.y < 0) car.y = 0;
@@ -949,7 +1114,6 @@ function loop() {
   const remainingMeters = Math.max(0, Math.round((distanceGoalKm - distanceKm) * 1000));
   document.getElementById('distance-left').textContent = remainingMeters;
 
-  // Aumentar spawnRate cuanto menos distancia al final
   const progress = 1 - remainingMeters / (distanceGoalKm * 1000);
   spawnRate = baseSpawnRate + progress * (0.02 - baseSpawnRate);
 
