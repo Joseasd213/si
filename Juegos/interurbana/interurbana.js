@@ -40,16 +40,16 @@ function getVehicleImage(type) {
 
 const speedLimits = {
   urbana: 50,
-  interurbana: 90,
+  interurbana: 120,
   travesia: 60,
-  'turismo-interurbana': 90
+  'turismo-interurbana': 120
 };
 
 // Velocitat ambiental (controlada per fletxes amunt/avall)
 let minSpeed = 10;
 let maxSpeed = 180;
 let acceleration = 1;
-let speed = 80; // Velocidad inicial bajo el límite de interurbana (90 km/h)
+let speed = 80; // Velocidad inicial bajo el límite de interurbana (120 km/h)
 const lowerVehicle = selectedVehicle.toLowerCase();
 if (lowerVehicle === 'vmp' || lowerVehicle === 'ciclos') {
   maxSpeed = 45;
@@ -847,7 +847,7 @@ function checkRuleViolations() {
     lastCarLane = currentLane;
   }
 
-  const speedLimit = speedLimits[tipoCarretera] || 90;
+  const speedLimit = speedLimits[tipoCarretera] || 120;
   if (speed > speedLimit && !wasOverSpeed) {
     penalties += 1;
     console.log(`🚨 Sanción #${penalties}: Exceso de velocidad (${Math.round(speed)} km/h > ${speedLimit} km/h)`);
