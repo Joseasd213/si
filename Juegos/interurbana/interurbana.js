@@ -137,7 +137,7 @@ const events = [
   { text: "Et sents invencible", a: 60, d: 0 },
   { text: "Et crida la teva ex 📞", a: 0, d: 50 },
   { text: "Vols canviar la música 🎵", a: 0, d: 40 },
-  { text: "Creus haver vist a Messi ⚽", a: 0, d: 80 },
+  { text: "Creus haver vist a una persona famosa", a: 0, d: 80 },
   { text: "Notificació del mòbil 📱", a: 0, d: 20 },
   { text: "T'ofereixen un tabac 🚬", a: 20, d: 40 }
 ];
